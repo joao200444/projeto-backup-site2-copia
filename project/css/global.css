@@ -1,0 +1,1683 @@
+/* Estilos globais e componentes reutilizáveis */
+
+:root {
+    --primary-bg: #000000;
+    --primary-text: #ffffff;
+    --overlay-bg: rgba(255, 255, 255, 0.1);
+    --overlay-border: rgba(255, 255, 255, 0.2);
+    --transition-speed: 0.3s;
+    
+    /* Cores adicionais */
+    --primary-color: #6200ee;
+    --primary-color-dark: #3700b3;
+    --accent-color: #03dac6;
+    --accent-color-dark: #018786;
+    --surface-color: #1e1e1e;
+    --surface-color-light: #2c2c2c;
+    --error-color: #cf6679;
+    --error-color-dark: #b00020;
+    --success-color: #4caf50;
+    --warning-color: #ff9800;
+    --info-color: #2196f3;
+    --secondary-text: #b0b0b0;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background-color: var(--primary-bg);
+    color: var(--primary-text);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Menu Button */
+.menu-btn {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    z-index: 1000;
+    background: var(--overlay-bg);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid var(--overlay-border);
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: background-color var(--transition-speed);
+    color: var(--primary-text);
+    will-change: transform;
+}
+
+.menu-btn:hover {
+    background: var(--overlay-border);
+    transform: scale(1.05);
+}
+
+/* Sidebar */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: -16rem;
+    width: 16rem;
+    height: 100vh;
+    background: var(--overlay-bg);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    transition: left var(--transition-speed) ease;
+    z-index: 40;
+    border-right: 1px solid var(--overlay-border);
+    will-change: left;
+}
+
+.sidebar.open {
+    left: 0;
+}
+
+.close-btn {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: var(--primary-text);
+}
+
+.sidebar-content {
+    padding-top: 4rem;
+}
+
+.sidebar-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1.5rem;
+    color: var(--primary-text);
+    text-decoration: none;
+    transition: background-color 0.2s;
+}
+
+.sidebar-item:hover {
+    background-color: var(--overlay-bg);
+}
+
+/* Main Content */
+.main-content {
+    margin-top: 150px; /* Aumentei para descer mais o conteúdo */
+    padding: 0 1.5rem;
+    flex-grow: 1;
+    margin-top: 20px; /* Adicionado espaço no topo */
+    margin-bottom: 20px; /* Adicionado espaço na base */
+}
+
+.main-content header {
+    position: fixed;
+    top: 50px;
+    right: 10px;
+    width: auto;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    margin-bottom: 200px;
+    margin-top: -30px; /* Adicionei margin-top negativa */
+}
+
+.search-container {
+    display: flex;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 30px;
+    padding: 10px 20px;
+    max-width: 500px;
+    width: 100%;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    position: relative;
+    overflow: hidden; /* Garante que o sublinhado fique dentro do container */
+    margin-top: 200px; /* Adicionei espaço acima da barra de pesquisa */
+}
+
+.search-container::before,
+.search-container::after {
+    content: '';
+    position: absolute;
+    background-color: #007bff;
+    transition: all 0.3s ease;
+    z-index: 1;
+}
+
+/* Cantos superiores */
+.search-container::before {
+    top: -2px;
+    left: -2px;
+    width: 0;
+    height: 2px;
+    border-radius: 10px 0 0 0;
+}
+
+.search-container::after {
+    top: -2px;
+    right: -2px;
+    width: 2px;
+    height: 0;
+    border-radius: 0 10px 0 0;
+}
+
+/* Cantos inferiores */
+.search-bottom-left {
+    position: absolute;
+    bottom: -2px;
+    left: -2px;
+    width: 0;
+    height: 2px;
+    background-color: #007bff;
+    transition: all 0.3s ease;
+    border-radius: 0 0 0 10px;
+    z-index: 1;
+}
+
+.search-bottom-right {
+    position: absolute;
+    bottom: -2px;
+    right: -2px;
+    width: 2px;
+    height: 0;
+    background-color: #007bff;
+    transition: all 0.3s ease;
+    border-radius: 0 0 10px 0;
+    z-index: 1;
+}
+
+/* Efeito hover */
+.search-container:hover::before {
+    width: calc(100% + 4px);
+}
+
+.search-container:hover::after {
+    height: calc(100% + 4px);
+}
+
+.search-container:hover .search-bottom-left {
+    width: calc(100% + 4px);
+}
+
+.search-container:hover .search-bottom-right {
+    height: calc(100% + 4px);
+}
+
+.search-container input[type="search"]:focus {
+    outline: none;
+}
+
+.search-container input[type="search"] {
+    background: transparent;
+    border: none;
+    color: white;
+    flex-grow: 1;
+    margin-right: 10px;
+    outline: none;
+    font-size: 16px; /* Aumentei o tamanho da fonte */
+    width: 100%; /* Ocupar todo o espaço disponível */
+}
+
+.search-container svg {
+    color: white;
+    cursor: pointer;
+}
+
+/* Modais */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background-color: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(15px);
+    border-radius: 15px;
+    padding: 2rem;
+    width: 90%;
+    max-width: 600px;
+    color: black; /* Mudei de white para black */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.modal-content h2, 
+.modal-content h3 {
+    color: black; /* Definindo títulos em preto */
+}
+
+.color-option span, 
+.background-option {
+    color: black; /* Definindo cor dos textos em preto */
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid var(--overlay-border);
+}
+
+.close-modal {
+    background: none;
+    border: none;
+    color: var(--primary-text);
+    font-size: 1.5em;
+    cursor: pointer;
+}
+
+/* Botões de Ação */
+.action-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.action-btn:hover {
+    opacity: 0.9;
+}
+
+/* Toast Notifications */
+.toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1100;
+}
+
+.toast {
+    background: var(--surface-color-light);
+    color: var(--primary-text);
+    padding: 15px;
+    border-radius: 6px;
+    margin-bottom: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.toast.sucesso {
+    border-left: 4px solid var(--success-color);
+}
+
+.toast.erro {
+    border-left: 4px solid var(--error-color);
+}
+
+.toast.info {
+    border-left: 4px solid var(--info-color);
+}
+
+/* Scrollbar Personalizada */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--surface-color);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-color-dark);
+}
+
+/* Seção de Destaques */
+.highlights {
+    margin-top: 0; /* Reduzi de 2rem para 0 */
+}
+
+.highlights-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+}
+
+.highlight-card {
+    background-color: var(--surface-color-light);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid var(--overlay-border);
+}
+
+.highlight-card:hover {
+    transform: scale(1.03);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.highlight-image {
+    width: 100%;
+    height: 300px;
+    overflow: hidden;
+}
+
+.highlight-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.highlight-card:hover .highlight-image img {
+    transform: scale(1.1);
+}
+
+.highlight-info {
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.highlight-info h3 {
+    font-size: 1.2rem;
+    color: var(--primary-text);
+    margin-bottom: 0.5rem;
+}
+
+.highlight-info p {
+    color: var(--secondary-text);
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+}
+
+.highlight-details {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid rgba(0,0,0,0.1);
+}
+
+.featured, .obras-section, .latest-updates {
+    margin-top: 50px; /* Reduzi de 100px para 50px */
+    margin-bottom: 30px;
+    padding: 0 20px;
+}
+
+.featured h2, .obras-section h2, .latest-updates h2 {
+    color: white;
+    text-align: left; /* Alinha para a esquerda */
+    margin-bottom: 20px;
+    padding-left: 20px; /* Adiciona um pouco de padding para não ficar grudado na borda */
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.featured h2::after, .obras-section h2::after, .latest-updates h2::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: -5px;
+    left: 20px;
+    background-color: #007bff; /* Cor azul */
+    transition: width 0.3s ease;
+}
+
+.featured h2:hover, .obras-section h2:hover, .latest-updates h2:hover {
+    color: #007bff; /* Muda cor para azul ao passar o mouse */
+}
+
+.featured h2:hover::after, .obras-section h2:hover::after, .latest-updates h2:hover::after {
+    width: calc(100% - 40px); /* Largura do sublinhado */
+}
+
+.featured-grid, .obras-grid, .manga-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+    justify-content: start; /* Alinha o grid para o início */
+    padding: 0 20px; /* Adiciona padding para manter consistência */
+}
+
+/* Logo e Cabeçalho */
+.site-header {
+    position: fixed;
+    top: 10px;
+    left: 100px;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    margin-bottom: 50px;
+    margin-top: -30px; /* Adicionei margin-top negativa */
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+    background-color: transparent;
+    border: none;
+    padding: 10px 20px;
+}
+
+.site-title {
+    color: white;
+    font-size: 24px;
+    margin-right: 15px;
+    font-weight: bold;
+}
+
+.logo-icon {
+    width: 30px;
+    height: 30px;
+}
+
+.animated-icon {
+    stroke: #007bff;
+    animation: float 2s ease-in-out infinite;
+    transform-origin: center;
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+.logo-icon svg {
+    width: 100%;
+    height: 100%;
+}
+
+/* Espaçador */
+.spacer {
+    height: 200px;
+    width: 100%;
+}
+
+/* Layout Image */
+.layout-image-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-top: 150px;
+    margin-bottom: 150px;
+}
+
+.layout-image {
+    width: 98%;
+    max-width: 1500px;
+    height: 300px;
+    object-fit: cover;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+/* Responsividade Geral */
+@media (max-width: 768px) {
+    .main-content {
+        padding: 1rem;
+    }
+}
+
+/* Seções principais */
+.featured, .obras-section, .latest-updates {
+    margin-top: 50px; /* Reduzi de 100px para 50px */
+    margin-bottom: 30px;
+    padding: 0 20px;
+}
+
+.section-title {
+    margin-top: -100px; /* Aumentei de -50px para -100px */
+}
+
+/* Seção de Configurações */
+.config-section {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+    background-color: var(--surface-color-light);
+    border-radius: 12px;
+    color: var(--primary-text);
+}
+
+.config-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.config-group {
+    background-color: var(--surface-color);
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.config-group h3 {
+    margin-bottom: 1rem;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    padding-bottom: 0.5rem;
+}
+
+.config-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.config-item label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.config-item input[type="checkbox"] {
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    background-color: var(--surface-color-light);
+    border: 2px solid var(--primary-color);
+    border-radius: 4px;
+    cursor: pointer;
+    position: relative;
+}
+
+.config-item input[type="checkbox"]:checked {
+    background-color: var(--primary-color);
+}
+
+.config-item input[type="checkbox"]:checked::after {
+    content: '✓';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+}
+
+.config-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1rem;
+}
+
+.btn {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.btn-secondary {
+    background-color: var(--surface-color-light);
+    color: var(--primary-text);
+    border: 1px solid rgba(255,255,255,0.2);
+}
+
+.btn:hover {
+    opacity: 0.9;
+}
+
+/* Modal de Personalização */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.modal-overlay.show {
+    display: flex;
+    opacity: 1;
+}
+
+.modal-content {
+    background-color: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(15px);
+    border-radius: 15px;
+    padding: 2rem;
+    width: 90%;
+    max-width: 600px;
+    color: black; /* Mudei de white para black */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.modal-content h2, 
+.modal-content h3 {
+    color: black; /* Definindo títulos em preto */
+}
+
+.color-option span, 
+.background-option {
+    color: black; /* Definindo cor dos textos em preto */
+}
+
+.color-section, .background-section, .animation-section {
+    margin-bottom: 1.5rem;
+}
+
+.color-grid, .background-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+}
+
+.color-option, .background-option {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 8px;
+    transition: transform 0.2s ease;
+}
+
+.color-option:hover, .background-option:hover {
+    transform: scale(1.05);
+}
+
+.color-preview {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-bottom: 0.5rem;
+}
+
+.background-option {
+    background-color: rgba(255, 255, 255, 0.1);
+    text-align: center;
+    padding: 1rem;
+}
+
+.background-option:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+}
+
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(255, 255, 255, 0.1);
+    transition: .4s;
+    border-radius: 34px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: var(--primary-color);
+}
+
+input:checked + .slider:before {
+    transform: translateX(26px);
+}
+
+/* Animação de Neve */
+@keyframes snowfall {
+    0% {
+        transform: translateY(-100%);
+    }
+    100% {
+        transform: translateY(100vh);
+    }
+}
+
+.snowflake {
+    position: fixed;
+    top: -10px;
+    width: 10px;
+    height: 10px;
+    background: white;
+    border-radius: 50%;
+    opacity: 0.7;
+    pointer-events: none;
+    z-index: 9999;
+    animation: snowfall linear infinite;
+}
+
+/* Animações de Hover para Cards de Destaques */
+.featured-item {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    transform-origin: center;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.featured-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        120deg, 
+        transparent, 
+        rgba(255,255,255,0.1), 
+        transparent
+    );
+    transition: all 0.6s ease;
+}
+
+.featured-item:hover {
+    transform: scale(1.05); /* Aumenta levemente o tamanho */
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2); /* Sombra mais pronunciada */
+}
+
+.featured-item:hover::before {
+    left: 100%; /* Efeito de brilho passando */
+}
+
+.featured-item img {
+    transition: transform 0.3s ease;
+}
+
+.featured-item:hover img {
+    transform: scale(1.1); /* Zoom sutil na imagem */
+}
+
+.featured-info {
+    transition: all 0.3s ease;
+}
+
+.featured-item:hover .featured-info {
+    transform: translateY(-10px); /* Levanta sutilmente as informações */
+    opacity: 0.9;
+}
+
+/* Animação de entrada */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.featured-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+}
+
+.featured-item {
+    animation: fadeInUp 0.5s ease forwards;
+    opacity: 0;
+}
+
+.featured-item:nth-child(1) { animation-delay: 0.1s; }
+.featured-item:nth-child(2) { animation-delay: 0.2s; }
+.featured-item:nth-child(3) { animation-delay: 0.3s; }
+
+/* Estilos para Cards de Obras */
+.obra-main {
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* Adiciona espaço entre elementos */
+    margin-bottom: 30px; /* Espaço adicional na base */
+}
+
+.obra-menu {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 15px;
+    background-color: #121212;
+    border-radius: 8px;
+}
+
+.obras-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+    padding: 10px;
+}
+
+.obra-card {
+    width: 220px;
+    height: 350px;
+    margin: 10px;
+    perspective: 1000px;
+    transition: all 0.3s ease;
+}
+
+.obra-image {
+    height: 250px; /* Reduzido de 300px */
+    overflow: hidden;
+    transition: transform 0.3s ease;
+}
+
+.obra-info {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 1rem;
+    margin-top: auto;
+    text-align: center;
+    transition: transform 0.3s ease;
+}
+
+.obra-info h3 {
+    margin-bottom: 0.5rem;
+    font-size: 1rem;
+}
+
+.obra-info p {
+    margin-bottom: 1rem;
+    font-size: 0.8rem;
+}
+
+.obra-details {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.7rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid rgba(0,0,0,0.1);
+}
+
+.obra-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+}
+
+.obra-card:hover .obra-image {
+    transform: scale(1.1);
+}
+
+.obra-card:hover .obra-image img {
+    transform: scale(1.15);
+}
+
+.obra-card:hover .obra-info {
+    transform: translateY(-10px);
+}
+
+/* Animação de entrada */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.obra-card {
+    animation: fadeInUp 0.5s ease forwards;
+    opacity: 0;
+}
+
+.obra-card:nth-child(1) { animation-delay: 0.1s; }
+.obra-card:nth-child(2) { animation-delay: 0.2s; }
+.obra-card:nth-child(3) { animation-delay: 0.3s; }
+
+/* Status de Obras */
+.obra-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    background-color: rgba(0,0,0,0.1);
+    border: 1px solid rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+}
+
+.obra-status-icon {
+    font-size: 1.5rem;
+    display: inline-block;
+}
+
+/* Animação Novo - Fogo pulsante */
+.obra-status-novo .obra-status-icon {
+    animation: pulse-fire 1s infinite alternate;
+}
+
+@keyframes pulse-fire {
+    0% {
+        transform: scale(0.8);
+        text-shadow: 0 0 5px rgba(255,106,0,0.5);
+    }
+    100% {
+        transform: scale(1.2);
+        text-shadow: 0 0 10px rgba(255,106,0,1);
+    }
+}
+
+/* Animação Em Andamento - Raio tremendo */
+.obra-status-andamento .obra-status-icon {
+    animation: shake-lightning 0.5s infinite alternate;
+}
+
+@keyframes shake-lightning {
+    0% {
+        transform: translateX(-2px) rotate(-5deg);
+    }
+    100% {
+        transform: translateX(2px) rotate(5deg);
+    }
+}
+
+/* Animação Completo - Estrela brilhante */
+.obra-status-completo .obra-status-icon {
+    animation: shine-star 1s infinite alternate;
+}
+
+@keyframes shine-star {
+    0% {
+        transform: rotate(-10deg) scale(0.9);
+        opacity: 0.7;
+    }
+    100% {
+        transform: rotate(10deg) scale(1.1);
+        opacity: 1;
+    }
+}
+
+/* Animações de Hover para Status de Obras */
+.obra-card:hover .obra-status-novo .obra-status-icon {
+    animation: fire-hover 0.3s infinite alternate;
+}
+
+@keyframes fire-hover {
+    0% {
+        transform: scale(1.2) rotate(-10deg);
+        text-shadow: 0 0 10px rgba(255,106,0,1), 0 0 20px rgba(255,0,0,0.7);
+    }
+    100% {
+        transform: scale(1.3) rotate(10deg);
+        text-shadow: 0 0 15px rgba(255,106,0,1), 0 0 30px rgba(255,0,0,1);
+    }
+}
+
+.obra-card:hover .obra-status-andamento .obra-status-icon {
+    animation: lightning-hover 0.2s infinite alternate;
+}
+
+@keyframes lightning-hover {
+    0% {
+        transform: scale(1.2) translateX(-5px) rotate(-15deg);
+        text-shadow: 0 0 10px rgba(0,255,255,0.7), 0 0 20px rgba(0,0,255,0.5);
+    }
+    100% {
+        transform: scale(1.3) translateX(5px) rotate(15deg);
+        text-shadow: 0 0 15px rgba(0,255,255,1), 0 0 30px rgba(0,0,255,1);
+    }
+}
+
+.obra-card:hover .obra-status-completo .obra-status-icon {
+    animation: star-hover 0.5s infinite alternate;
+}
+
+@keyframes star-hover {
+    0% {
+        transform: scale(1.2) rotate(-20deg);
+        text-shadow: 0 0 10px rgba(255,255,0,0.7), 0 0 20px rgba(255,215,0,0.5);
+    }
+    100% {
+        transform: scale(1.3) rotate(20deg);
+        text-shadow: 0 0 15px rgba(255,255,0,1), 0 0 30px rgba(255,215,0,1);
+    }
+}
+
+/* Efeito de fogo em toda a obra quando hover */
+.obra-card:hover::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        45deg, 
+        rgba(255,106,0,0.1), 
+        rgba(255,0,0,0.1)
+    );
+    z-index: 1;
+    pointer-events: none;
+    animation: fire-background 0.5s infinite alternate;
+}
+
+@keyframes fire-background {
+    0% {
+        opacity: 0.1;
+        transform: scale(1);
+    }
+    100% {
+        opacity: 0.2;
+        transform: scale(1.02);
+    }
+}
+
+/* Animações de Fogo nas Laterais do Card */
+.obra-card {
+    position: relative;
+    overflow: hidden;
+}
+
+.obra-card::before,
+.obra-card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 20px;
+    background: linear-gradient(
+        transparent 0%, 
+        rgba(255,106,0,0.2) 25%, 
+        rgba(255,0,0,0.3) 50%, 
+        rgba(255,106,0,0.2) 75%, 
+        transparent 100%
+    );
+    opacity: 0.3;
+    z-index: 10;
+    pointer-events: none;
+    animation: fire-side 1s infinite alternate;
+}
+
+.obra-card::before {
+    left: 0;
+}
+
+.obra-card::after {
+    right: 0;
+}
+
+@keyframes fire-side {
+    0% {
+        background: linear-gradient(
+            transparent 0%, 
+            rgba(255,106,0,0.2) 25%, 
+            rgba(255,0,0,0.3) 50%, 
+            rgba(255,106,0,0.2) 75%, 
+            transparent 100%
+        );
+        transform: scaleY(0.9);
+    }
+    100% {
+        background: linear-gradient(
+            transparent 0%, 
+            rgba(255,106,0,0.3) 25%, 
+            rgba(255,0,0,0.4) 50%, 
+            rgba(255,106,0,0.3) 75%, 
+            transparent 100%
+        );
+        transform: scaleY(1.1);
+    }
+}
+
+/* Manter animações anteriores de hover */
+.obra-card:hover .obra-status-novo .obra-status-icon {
+    animation: fire-hover 0.3s infinite alternate;
+}
+
+@keyframes fire-hover {
+    0% {
+        transform: scale(1.2) rotate(-10deg);
+        text-shadow: 0 0 10px rgba(255,106,0,1), 0 0 20px rgba(255,0,0,0.7);
+    }
+    100% {
+        transform: scale(1.3) rotate(10deg);
+        text-shadow: 0 0 15px rgba(255,106,0,1), 0 0 30px rgba(255,0,0,1);
+    }
+}
+
+.obra-card:hover .obra-status-andamento .obra-status-icon {
+    animation: lightning-hover 0.2s infinite alternate;
+}
+
+@keyframes lightning-hover {
+    0% {
+        transform: scale(1.2) translateX(-5px) rotate(-15deg);
+        text-shadow: 0 0 10px rgba(0,255,255,0.7), 0 0 20px rgba(0,0,255,0.5);
+    }
+    100% {
+        transform: scale(1.3) translateX(5px) rotate(15deg);
+        text-shadow: 0 0 15px rgba(0,255,255,1), 0 0 30px rgba(0,0,255,1);
+    }
+}
+
+.obra-card:hover .obra-status-completo .obra-status-icon {
+    animation: star-hover 0.5s infinite alternate;
+}
+
+@keyframes star-hover {
+    0% {
+        transform: scale(1.2) rotate(-20deg);
+        text-shadow: 0 0 10px rgba(255,255,0,0.7), 0 0 20px rgba(255,215,0,0.5);
+    }
+    100% {
+        transform: scale(1.3) rotate(20deg);
+        text-shadow: 0 0 15px rgba(255,255,0,1), 0 0 30px rgba(255,215,0,1);
+    }
+}
+
+/* Efeito de fogo em toda a obra quando hover */
+.obra-card:hover::before.fire-background,
+.obra-card:hover::after.fire-background {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        45deg, 
+        rgba(255,106,0,0.1), 
+        rgba(255,0,0,0.1)
+    );
+    z-index: 1;
+    pointer-events: none;
+    animation: fire-background 0.5s infinite alternate;
+}
+
+@keyframes fire-background {
+    0% {
+        opacity: 0.1;
+        transform: scale(1);
+    }
+    100% {
+        opacity: 0.2;
+        transform: scale(1.02);
+    }
+}
+
+/* Animações de Fogo nas Laterais do Card - Apenas para Novo */
+.obra-card.obra-status-novo::before,
+.obra-card.obra-status-novo::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 20px;
+    background: linear-gradient(
+        transparent 0%, 
+        rgba(255,106,0,0.2) 25%, 
+        rgba(255,0,0,0.3) 50%, 
+        rgba(255,106,0,0.2) 75%, 
+        transparent 100%
+    );
+    opacity: 0.3;
+    z-index: 10;
+    pointer-events: none;
+    animation: fire-side 1s infinite alternate;
+}
+
+.obra-card.obra-status-novo::before {
+    left: 0;
+}
+
+.obra-card.obra-status-novo::after {
+    right: 0;
+}
+
+@keyframes fire-side {
+    0% {
+        background: linear-gradient(
+            transparent 0%, 
+            rgba(255,106,0,0.2) 25%, 
+            rgba(255,0,0,0.3) 50%, 
+            rgba(255,106,0,0.2) 75%, 
+            transparent 100%
+        );
+        transform: scaleY(0.9);
+    }
+    100% {
+        background: linear-gradient(
+            transparent 0%, 
+            rgba(255,106,0,0.3) 25%, 
+            rgba(255,0,0,0.4) 50%, 
+            rgba(255,106,0,0.3) 75%, 
+            transparent 100%
+        );
+        transform: scaleY(1.1);
+    }
+}
+
+/* Animações específicas para cada status */
+/* Status Em Andamento - Efeito de Energia */
+.obra-card.obra-status-andamento::before,
+.obra-card.obra-status-andamento::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 20px;
+    background: linear-gradient(
+        transparent 0%, 
+        rgba(0,255,255,0.2) 25%, 
+        rgba(0,0,255,0.3) 50%, 
+        rgba(0,255,255,0.2) 75%, 
+        transparent 100%
+    );
+    opacity: 0.3;
+    z-index: 10;
+    pointer-events: none;
+    animation: energy-pulse 1s infinite alternate;
+}
+
+.obra-card.obra-status-andamento::before {
+    left: 0;
+}
+
+.obra-card.obra-status-andamento::after {
+    right: 0;
+}
+
+@keyframes energy-pulse {
+    0% {
+        background: linear-gradient(
+            transparent 0%, 
+            rgba(0,255,255,0.2) 25%, 
+            rgba(0,0,255,0.3) 50%, 
+            rgba(0,255,255,0.2) 75%, 
+            transparent 100%
+        );
+        transform: scaleY(0.9);
+        opacity: 0.3;
+    }
+    100% {
+        background: linear-gradient(
+            transparent 0%, 
+            rgba(0,255,255,0.3) 25%, 
+            rgba(0,0,255,0.4) 50%, 
+            rgba(0,255,255,0.3) 75%, 
+            transparent 100%
+        );
+        transform: scaleY(1.1);
+        opacity: 0.5;
+    }
+}
+
+/* Status Completo - Efeito de Brilho */
+.obra-card.obra-status-completo::before,
+.obra-card.obra-status-completo::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 20px;
+    background: linear-gradient(
+        transparent 0%, 
+        rgba(255,255,0,0.2) 25%, 
+        rgba(255,215,0,0.3) 50%, 
+        rgba(255,255,0,0.2) 75%, 
+        transparent 100%
+    );
+    opacity: 0.3;
+    z-index: 10;
+    pointer-events: none;
+    animation: shine-pulse 1s infinite alternate;
+}
+
+.obra-card.obra-status-completo::before {
+    left: 0;
+}
+
+.obra-card.obra-status-completo::after {
+    right: 0;
+}
+
+@keyframes shine-pulse {
+    0% {
+        background: linear-gradient(
+            transparent 0%, 
+            rgba(255,255,0,0.2) 25%, 
+            rgba(255,215,0,0.3) 50%, 
+            rgba(255,255,0,0.2) 75%, 
+            transparent 100%
+        );
+        transform: scaleY(0.9);
+        opacity: 0.3;
+    }
+    100% {
+        background: linear-gradient(
+            transparent 0%, 
+            rgba(255,255,0,0.3) 25%, 
+            rgba(255,215,0,0.4) 50%, 
+            rgba(255,255,0,0.3) 75%, 
+            transparent 100%
+        );
+        transform: scaleY(1.1);
+        opacity: 0.5;
+    }
+}
+
+/* Animações de hover anteriores mantidas */
+.obra-card:hover .obra-status-novo .obra-status-icon {
+    animation: fire-hover 0.3s infinite alternate;
+}
+
+@keyframes fire-hover {
+    0% {
+        transform: scale(1.2) rotate(-10deg);
+        text-shadow: 0 0 10px rgba(255,106,0,1), 0 0 20px rgba(255,0,0,0.7);
+    }
+    100% {
+        transform: scale(1.3) rotate(10deg);
+        text-shadow: 0 0 15px rgba(255,106,0,1), 0 0 30px rgba(255,0,0,1);
+    }
+}
+
+.obra-card:hover .obra-status-andamento .obra-status-icon {
+    animation: lightning-hover 0.2s infinite alternate;
+}
+
+@keyframes lightning-hover {
+    0% {
+        transform: scale(1.2) translateX(-5px) rotate(-15deg);
+        text-shadow: 0 0 10px rgba(0,255,255,0.7), 0 0 20px rgba(0,0,255,0.5);
+    }
+    100% {
+        transform: scale(1.3) translateX(5px) rotate(15deg);
+        text-shadow: 0 0 15px rgba(0,255,255,1), 0 0 30px rgba(0,0,255,1);
+    }
+}
+
+.obra-card:hover .obra-status-completo .obra-status-icon {
+    animation: star-hover 0.5s infinite alternate;
+}
+
+@keyframes star-hover {
+    0% {
+        transform: scale(1.2) rotate(-20deg);
+        text-shadow: 0 0 10px rgba(255,255,0,0.7), 0 0 20px rgba(255,215,0,0.5);
+    }
+    100% {
+        transform: scale(1.3) rotate(20deg);
+        text-shadow: 0 0 15px rgba(255,255,0,1), 0 0 30px rgba(255,215,0,1);
+    }
+}
+
+/* Menu de Obras */
+.obra-menu {
+    max-width: 1100px; /* Reduzido de 1200px */
+    margin: 0 auto;
+    padding: 5px; /* Reduzido de 10px */
+    background-color: #121212; /* Cor de fundo escura */
+}
+
+.obras-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px; /* Reduzido de 15px */
+    padding: 5px; /* Reduzido de 10px */
+}
+
+.obra-card {
+    width: 220px; /* Reduzido de 250px */
+    height: 350px; /* Reduzido de 380px */
+    margin: 5px; /* Reduzido de 10px */
+    perspective: 1000px;
+    transition: all 0.3s ease;
+}
+
+.obra-card-inner {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transition: transform 0.6s;
+    transform-style: preserve-3d;
+}
+
+.obra-card-front {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    backface-visibility: hidden;
+    display: flex;
+    flex-direction: column;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+}
+
+.obra-card-front img {
+    width: 100%;
+    height: 220px; /* Reduzido de 250px */
+    object-fit: cover;
+}
+
+.obra-card-content {
+    padding: 8px; /* Reduzido de 10px */
+    background-color: #1f1f1f;
+    flex-grow: 1;
+}
+
+.obra-card-content h3 {
+    font-size: 14px; /* Reduzido de 16px */
+    margin-bottom: 6px; /* Reduzido de 8px */
+}
+
+.obra-card-content p {
+    font-size: 11px; /* Reduzido de 12px */
+    color: #aaa;
+    margin-bottom: 6px; /* Reduzido de 8px */
+}
+
+/* Grade de Obras */
+.obras-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px; /* Aumentei o espaçamento */
+    padding: 20px;
+}
+
+/* Abas de Navegação */
+.obra-tabs {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px; /* Aumentado de 10px */
+    padding: 12px 0; /* Aumentado de 8px */
+    background-color: #1a1a1a;
+    margin-top: 20px; /* Adicionado margem superior */
+    margin-bottom: 20px; /* Adicionado margem inferior */
+}
+
+.obra-tabs .tab-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px; /* Aumentado de 5px */
+    padding: 8px 15px; /* Aumentado de 6px 12px */
+    font-size: 14px; /* Aumentado de 12px */
+    border-radius: 8px; /* Aumentado de 6px */
+    transition: all 0.3s ease;
+}
+
+.obra-tabs .tab-btn i {
+    font-size: 14px; /* Reduzido de 16px */
+}
+
+/* Conteúdo das Abas */
+.tab-content {
+    padding: 20px; /* Aumentado de 10px */
+    margin-bottom: 30px; /* Adicionado espaço na base */
+}
+
+/* Seções específicas das abas */
+.capitulos-header,
+.comentarios-header,
+.relacionados-header,
+.detalhes-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 0; /* Aumentado de 8px */
+    margin-bottom: 20px; /* Aumentado de 10px */
+}
+
+.capitulos-header h3,
+.comentarios-header h3,
+.relacionados-header h3,
+.detalhes-header h3 {
+    font-size: 16px; /* Reduzido de 18px */
+    margin: 0;
+}
+
+.capitulos-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Reduzido de 15px */
+}
+
+.capitulos-controls .search-box {
+    display: flex;
+    align-items: center;
+    background-color: #2a2a2a;
+    border-radius: 6px;
+    padding: 5px 8px; /* Reduzido de 8px 10px */
+}
+
+.capitulos-controls .search-box input {
+    background: transparent;
+    border: none;
+    color: #fff;
+    font-size: 12px; /* Reduzido de 14px */
+    width: 150px; /* Reduzido de 200px */
+}
+
+.obra-content {
+    flex-grow: 1;
+    margin-top: 20px; /* Adicionado espaço no topo */
+    margin-bottom: 20px; /* Adicionado espaço na base */
+}
+
+.obra-tabs {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px; /* Aumentado de 10px */
+    padding: 12px 0; /* Aumentado de 8px */
+    background-color: #1a1a1a;
+    margin-top: 20px; /* Adicionado margem superior */
+    margin-bottom: 20px; /* Adicionado margem inferior */
+}
+
+.obra-tabs .tab-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px; /* Aumentado de 5px */
+    padding: 8px 15px; /* Aumentado de 6px 12px */
+    font-size: 14px; /* Aumentado de 12px */
+    border-radius: 8px; /* Aumentado de 6px */
+    transition: all 0.3s ease;
+}
+
+.tab-content {
+    padding: 20px; /* Aumentado de 10px */
+    margin-bottom: 30px; /* Adicionado espaço na base */
+}
+
+.capitulos-header,
+.comentarios-header,
+.relacionados-header,
+.detalhes-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 0; /* Aumentado de 8px */
+    margin-bottom: 20px; /* Aumentado de 10px */
+}
+
+.capitulos-header h3,
+.comentarios-header h3,
+.relacionados-header h3,
+.detalhes-header h3 {
+    font-size: 16px; /* Reduzido de 18px */
+    margin: 0;
+}
+
+.obra-metadata,
+.obra-rating,
+.obra-genres {
+    margin-bottom: 20px; /* Adicionado espaço entre seções */
+}
+
+.obra-banner {
+    min-height: 200px; /* Adicionado altura mínima */
+}

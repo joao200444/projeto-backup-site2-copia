@@ -1,0 +1,221 @@
+/* Estilos para a página de Upload de Donghua */
+
+body {
+    background-image: url('../imagem/Fundouploaddonghua.webp');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    padding: 1rem;
+    color: #ffffff;
+}
+
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5); /* Darker overlay for better readability */
+    backdrop-filter: blur(5px);
+    z-index: -1;
+}
+
+.upload-container {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 20px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    max-width: 900px;
+    margin: 2rem auto;
+    padding: 2.5rem;
+    position: relative;
+    z-index: 1;
+}
+
+.upload-container:hover {
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12), 
+                0 8px 15px rgba(46, 204, 113, 0.1);
+    transform: translateY(-5px);
+}
+
+.upload-form {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.form-group {
+    position: relative;
+}
+
+.form-group label {
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.form-group label .info-icon {
+    color: #2ecc71;
+    cursor: help;
+    opacity: 0.7;
+    transition: opacity 0.3s ease;
+}
+
+.form-group label .info-icon:hover {
+    opacity: 1;
+}
+
+.form-group input, 
+.form-group textarea, 
+.form-group select {
+    padding: 1rem;
+    border: 2px solid rgba(46, 204, 113, 0.3);
+    border-radius: 12px;
+    background-color: #f9f9f9;
+    color: #2c3e50;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+}
+
+.form-group input:focus, 
+.form-group textarea:focus, 
+.form-group select:focus {
+    outline: none;
+    border-color: #2ecc71;
+    box-shadow: 0 0 0 3px rgba(46, 204, 113, 0.15);
+}
+
+.upload-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 2rem;
+    gap: 1rem;
+}
+
+.submit-btn, .cancel-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.875rem 1.75rem;
+    border-radius: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: all 0.4s ease;
+    font-size: 1rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.submit-btn {
+    background: linear-gradient(135deg, #27ae60, #2ecc71);
+    color: white;
+    border: none;
+    box-shadow: 0 5px 15px rgba(46, 204, 113, 0.4);
+}
+
+.submit-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 7px 20px rgba(46, 204, 113, 0.5);
+}
+
+.submit-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(120deg, transparent, rgba(255,255,255,0.3), transparent);
+    transition: all 0.5s ease;
+}
+
+.submit-btn:hover::before {
+    left: 100%;
+}
+
+.cancel-btn {
+    background: #ecf0f1;
+    color: #2c3e50;
+    border: 2px solid rgba(0,0,0,0.1);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.cancel-btn:hover {
+    background: #d1d4d8;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+}
+
+.success-message {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.7);
+    background: linear-gradient(145deg, #27ae60, #2ecc71);
+    color: white;
+    padding: 2rem 3rem;
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.success-message.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.success-message .success-icon {
+    font-size: 3rem;
+    color: white;
+    margin-bottom: 1rem;
+    animation: pulse 1.5s infinite;
+}
+
+.success-message h3 {
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+/* Responsividade */
+@media screen and (max-width: 768px) {
+    .upload-container {
+        margin: 1rem;
+        padding: 1.5rem;
+        border-radius: 15px;
+    }
+
+    .upload-buttons {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .submit-btn, .cancel-btn {
+        width: 100%;
+    }
+}

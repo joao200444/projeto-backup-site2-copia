@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload de Donghua</title>
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/recent-donghuas.css">
+    <style>
+        body {
+            background-color: black;
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+            color: white;
+        }
+
+        .upload-container {
+            width: 100%;
+            max-width: 500px;
+            background-color: #1a1a1a;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 4px 6px rgba(255, 255, 255, 0.1);
+        }
+
+        .upload-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .upload-form input,
+        .upload-form select,
+        .upload-form textarea {
+            background-color: #2a2a2a;
+            border: 1px solid #3a3a3a;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .upload-form input::placeholder,
+        .upload-form select::placeholder,
+        .upload-form textarea::placeholder {
+            color: #888;
+        }
+
+        .form-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .btn {
+            flex-grow: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .btn-primary {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .btn-secondary {
+            background-color: #2196F3;
+            color: white;
+        }
+
+        .preview-card {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        #donghuaPreview {
+            max-width: 300px;
+            margin: 0 auto;
+        }
+
+        .card-criado-mensagem {
+            animation: fadeInOut 3s ease-in-out;
+        }
+
+        @keyframes fadeInOut {
+            0%, 100% { opacity: 0; }
+            10%, 90% { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="upload-container">
+        <h1>Upload de Donghua</h1>
+        <div id="cardCriadoMensagem" class="card-criado-mensagem" style="display: none; background-color: #4CAF50; color: white; padding: 10px; margin-bottom: 15px; border-radius: 5px; text-align: center;">
+            Card criado com sucesso! Clique em "Postar Donghua" para adicionar à página inicial.
+        </div>
+        <form id="donghuaForm" class="upload-form">
+            <input type="text" id="titulo" placeholder="Título do Donghua" required>
+            <textarea id="descricao" placeholder="Descrição" required></textarea>
+            <input type="text" id="imagem" placeholder="URL da Imagem" required>
+            
+            <select id="genero" required>
+                <option value="">Selecione o Gênero</option>
+                <option value="Ação">Ação</option>
+                <option value="Aventura">Aventura</option>
+                <option value="Fantasia">Fantasia</option>
+                <option value="Romance">Romance</option>
+                <option value="Comédia">Comédia</option>
+            </select>
+
+            <input type="number" id="capitulos" placeholder="Número de Capítulos" required>
+            
+            <select id="status" required>
+                <option value="">Selecione o Status</option>
+                <option value="Novo">Novo</option>
+                <option value="Em Andamento">Em Andamento</option>
+                <option value="Completo">Completo</option>
+            </select>
+
+            <div class="form-buttons">
+                <button type="button" id="criarCardBtn" class="btn btn-primary">Criar Card</button>
+                <button type="button" id="postarDonghua" class="btn btn-secondary" disabled>Postar Donghua</button>
+            </div>
+        </form>
+
+        <div class="preview-card">
+            <div id="donghuaPreview"></div>
+        </div>
+    </div>
+
+    <script>
+        const MAX_TOTAL_CARDS = 40000;
+        const donghuaForm = document.getElementById('donghuaForm');
+        const criarCardBtn = document.getElementById('criarCardBtn');
+        const postarDonghua = document.getElementById('postarDonghua');
+        const donghuaPreview = document.getElementById('donghuaPreview');
+        const cardCriadoMensagem = document.getElementById('cardCriadoMensagem');
+
+        let cardCriado = false;
+        let currentCardData = null;
+
+        criarCardBtn.addEventListener('click', function() {
+            const titulo = document.getElementById('titulo').value;
+            const descricao = document.getElementById('descricao').value;
+            const imagem = document.getElementById('imagem').value;
+            const genero = document.getElementById('genero').value;
+            const capitulos = document.getElementById('capitulos').value;
+            const status = document.getElementById('status').value;
+
+            if (titulo && descricao && imagem && genero && capitulos && status) {
+                const cardHTML = `
+                    <div class="obra-card obra-status-${status.toLowerCase().replace(' ', '-')}">
+                        <div class="obra-image">
+                            <img src="${imagem}" alt="${titulo}">
+                            <div class="obra-overlay">
+                                <span class="obra-status obra-status-${status.toLowerCase().replace(' ', '-')}">
+                                    <span class="obra-status-icon">${getStatusIcon(status)}</span>
+                                    ${status}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="obra-info">
+                            <h3>${titulo}</h3>
+                            <p>${descricao}</p>
+                            <div class="obra-details">
+                                <span class="obra-genre">${genero}</span>
+                                <span class="obra-chapters">${capitulos} Capítulos</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                donghuaPreview.innerHTML = cardHTML;
+                cardCriado = true;
+                currentCardData = { titulo, descricao, imagem, genero, capitulos, status };
+                postarDonghua.disabled = false;
+
+                // Mostrar mensagem de card criado
+                cardCriadoMensagem.style.display = 'block';
+            } else {
+                alert('Por favor, preencha todos os campos antes de criar o card.');
+            }
+        });
+
+        postarDonghua.addEventListener('click', function() {
+            if (cardCriado && currentCardData) {
+                const existingCards = JSON.parse(localStorage.getItem('donghuaCards') || '[]');
+                
+                const totalCards = existingCards.length;
+                if (totalCards >= MAX_TOTAL_CARDS) {
+                    alert(`Limite máximo de ${MAX_TOTAL_CARDS} cards atingido.`);
+                    return;
+                }
+
+                existingCards.push(currentCardData);
+                localStorage.setItem('donghuaCards', JSON.stringify(existingCards));
+                localStorage.setItem('selectedDonghua', JSON.stringify(currentCardData));
+
+                // Redirecionar para página inicial
+                window.location.href = 'index.html';
+            }
+        });
+
+        function getStatusIcon(status) {
+            switch(status) {
+                case 'Novo': return '🔥';
+                case 'Em Andamento': return '⚡';
+                case 'Completo': return '✨';
+                default: return '❓';
+            }
+        }
+    </script>
+</body>
+</html>

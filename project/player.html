@@ -1,0 +1,1349 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manga Player</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/chat.css">
+    <style>
+        :root {
+            --primary-color: #1DA1F2;
+            --secondary-color: #192734;
+            --accent-color: #FF4081;
+            --background-dark: #15202B;
+            --surface-dark: #192734;
+            --card-dark: #22303C;
+            --text-primary: #FFFFFF;
+            --text-secondary: #8899A6;
+            --border-radius: 15px;
+            --transition-speed: 0.3s;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--background-dark);
+            color: var(--text-primary);
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        .player-container {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 25px;
+            min-height: 100vh;
+            padding: 25px;
+            background: linear-gradient(135deg, var(--background-dark), var(--surface-dark));
+        }
+
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .video-wrapper {
+            position: relative;
+            background: var(--card-dark);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            aspect-ratio: 16/9;
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: transform var(--transition-speed);
+        }
+
+        .video-wrapper:hover {
+            transform: scale(1.01);
+        }
+
+        #video-player {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .player-controls {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.95), transparent);
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            opacity: 0;
+            transition: opacity var(--transition-speed), transform var(--transition-speed);
+            transform: translateY(10px);
+        }
+
+        .video-wrapper:hover .player-controls {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .control-btn {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: var(--text-primary);
+            font-size: 1.3rem;
+            cursor: pointer;
+            transition: all var(--transition-speed);
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        .control-btn:hover {
+            color: var(--primary-color);
+            background-color: rgba(29,161,242,0.2);
+            border-color: var(--primary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(29,161,242,0.3);
+        }
+
+        .control-btn:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 4px rgba(29,161,242,0.2);
+        }
+
+        .progress-bar {
+            flex-grow: 1;
+            height: 6px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 8px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
+            transition: height 0.2s ease;
+        }
+
+        .progress-bar:hover {
+            height: 8px;
+        }
+
+        .progress-filled {
+            height: 100%;
+            background: linear-gradient(90deg, 
+                var(--primary-color),
+                #4ecdc4
+            );
+            border-radius: 8px;
+            width: 0%;
+            transition: width 0.1s linear;
+            position: relative;
+            box-shadow: 0 0 10px rgba(29,161,242,0.5);
+        }
+
+        .progress-filled::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(
+                90deg,
+                transparent 0%,
+                rgba(255,255,255,0.2) 50%,
+                transparent 100%
+            );
+            animation: shine 2s linear infinite;
+        }
+
+        @keyframes shine {
+            from { transform: translateX(-100%); }
+            to { transform: translateX(100%); }
+        }
+
+        .volume-control {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: rgba(255,255,255,0.05);
+            padding: 5px 15px;
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: all var(--transition-speed);
+        }
+
+        .volume-control:hover {
+            background: rgba(255,255,255,0.1);
+            border-color: var(--primary-color);
+        }
+
+        .volume-slider {
+            width: 100px;
+            height: 6px;
+            -webkit-appearance: none;
+            appearance: none;
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
+        }
+
+        .volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid #fff;
+            box-shadow: 0 0 10px rgba(29,161,242,0.5);
+            transition: all var(--transition-speed);
+            position: relative;
+        }
+
+        .volume-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 15px rgba(29,161,242,0.7);
+        }
+
+        .volume-slider::-webkit-slider-runnable-track {
+            background: linear-gradient(90deg, var(--primary-color) 50%, rgba(255,255,255,0.1) 50%);
+            border-radius: 10px;
+            height: 6px;
+        }
+
+        .sidebar {
+            background-color: var(--surface-dark);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            height: 100%;
+            overflow-y: auto;
+        }
+
+        .chapter-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .chapter-item {
+            background-color: var(--card-dark);
+            padding: 15px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: all var(--transition-speed);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .chapter-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 4px;
+            background-color: var(--primary-color);
+            transform: scaleY(0);
+            transition: transform var(--transition-speed);
+        }
+
+        .chapter-item:hover {
+            transform: translateX(5px);
+            background-color: rgba(76, 175, 80, 0.1);
+        }
+
+        .chapter-item:hover::before {
+            transform: scaleY(1);
+        }
+
+        .chapter-item.active {
+            background-color: rgba(76, 175, 80, 0.2);
+        }
+
+        .chapter-item.active::before {
+            transform: scaleY(1);
+        }
+
+        .chapter-number {
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .chapter-title {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .manga-info {
+            background-color: var(--card-dark);
+            padding: 20px;
+            border-radius: var(--border-radius);
+            margin-bottom: 20px;
+        }
+
+        .manga-title {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: var(--text-primary);
+        }
+
+        .manga-meta {
+            display: flex;
+            gap: 15px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+
+        .keyboard-shortcuts {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 10px 20px;
+            border-radius: 20px;
+            display: none;
+            gap: 15px;
+            z-index: 1000;
+        }
+
+        .keyboard-shortcuts.show {
+            display: flex;
+        }
+
+        .shortcut-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .key {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: var(--text-primary);
+            font-family: monospace;
+        }
+
+        .progress-preview {
+            position: absolute;
+            bottom: 100%;
+            transform: translateX(-50%);
+            background-color: rgba(0, 0, 0, 0.9);
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        .progress-bar:hover .progress-preview {
+            display: block;
+        }
+
+        @media (max-width: 1024px) {
+            .player-container {
+                grid-template-columns: 1fr;
+                height: auto;
+            }
+
+            .sidebar {
+                height: 400px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .player-controls {
+                padding: 10px;
+            }
+
+            .volume-control {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="fixed top-4 right-4 z-50 flex space-x-4">
+        <a href="player.html" class="inline-flex items-center bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="3" y1="9" x2="21" y2="9"></line>
+                <line x1="9" y1="21" x2="9" y2="9"></line>
+            </svg>
+            Player 1
+        </a>
+        <a href="player-nativo.html" class="inline-flex items-center bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="3" y1="9" x2="21" y2="9"></line>
+                <line x1="9" y1="21" x2="9" y2="9"></line>
+            </svg>
+            Player 2
+        </a>
+    </div>
+
+    <div class="player-container">
+        <div class="main-content">
+            <div class="manga-info">
+                <h1 class="manga-title" id="manga-title">Carregando...</h1>
+                <div class="manga-meta">
+                    <div class="meta-item">
+                        <i class="fas fa-book"></i>
+                        <span id="chapter-title">Capítulo: Carregando...</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="video-wrapper">
+                <div id="video-container"></div>
+                <div class="player-controls">
+                    <button class="control-btn play-pause" id="play-pause-btn">
+                        <i class="fas fa-play"></i>
+                    </button>
+                    <div class="progress-bar">
+                        <div class="progress-filled"></div>
+                        <div class="progress-preview">Preview</div>
+                    </div>
+                    <div class="volume-control">
+                        <button class="control-btn volume">
+                            <i class="fas fa-volume-up"></i>
+                        </button>
+                        <input type="range" class="volume-slider" id="volume-slider" min="0" max="1" step="0.1" value="1">
+                    </div>
+                    <button class="control-btn fullscreen" id="fullscreen-btn">
+                        <i class="fas fa-expand"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+            <div class="sidebar">
+                <div class="chapter-list" id="chapter-list">
+                    <h3>Capítulos</h3>
+                </div>
+            </div>
+
+            <!-- Chat Button -->
+            <button id="chatBtn" class="chat-btn">
+                <i class="fas fa-comments"></i>
+                <span class="notification-badge">1</span>
+            </button>
+
+            <!-- Chat Panel -->
+            <div id="chatPanel" class="chat-panel">
+                <div class="chat-header">
+                    <h3>Chat da Obra</h3>
+                    <button class="close-chat">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="chat-messages" id="chatMessages">
+                    <!-- Messages will be loaded here -->
+                </div>
+                <div class="chat-input">
+                    <input type="text" placeholder="Digite sua mensagem..." id="messageInput">
+                    <button id="sendMessage">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+
+
+            <script>
+                // Chat functionality
+                const chatBtn = document.getElementById('chatBtn');
+                const chatPanel = document.getElementById('chatPanel');
+                const closeChat = document.querySelector('.close-chat');
+                const messageInput = document.getElementById('messageInput');
+                const sendMessage = document.getElementById('sendMessage');
+                const chatMessages = document.getElementById('chatMessages');
+
+                chatBtn.addEventListener('click', () => {
+                    chatPanel.classList.add('open');
+                    chatBtn.style.display = 'none';
+                });
+
+                closeChat.addEventListener('click', () => {
+                    chatPanel.classList.remove('open');
+                    chatBtn.style.display = 'flex';
+                });
+
+                // Function to add a message to the chat
+                // Carregar informações do usuário
+                function loadUserInfo() {
+                    const userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}');
+                    const isAdmin = userInfo.isAdmin || false;
+                    const username = userInfo.username || 'Usuário';
+                    const avatarUrl = userInfo.avatarUrl || 'https://source.unsplash.com/random/150x150';
+
+                    return { isAdmin, username, avatarUrl };
+                }
+
+                function addMessage(message, isUser = true) {
+                    const { isAdmin, username, avatarUrl } = loadUserInfo();
+                    const messageDiv = document.createElement('div');
+                    messageDiv.className = 'message-container';
+                    
+                    if (isUser) {
+                        messageDiv.innerHTML = `
+                            <div class="message-header">
+                                <img src="${avatarUrl}" alt="Avatar" class="user-avatar">
+                                <div class="user-info">
+                                    <span class="username">${username}</span>
+                                    ${isAdmin ? '<span class="admin-badge">Admin</span>' : ''}
+                                </div>
+                            </div>
+                            <div class="message-content user-message">
+                                ${message}
+                            </div>
+                        `;
+                    } else {
+                        messageDiv.innerHTML = `
+                            <div class="message-header">
+                                <img src="imagem/logo_size.webp" alt="Sistema" class="user-avatar">
+                                <div class="user-info">
+                                    <span class="username">Sistema</span>
+                                </div>
+                            </div>
+                            <div class="message-content system-message">
+                                ${message}
+                            </div>
+                        `;
+                    }
+
+                    chatMessages.appendChild(messageDiv);
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                }
+
+                // Adicionar estilos para as mensagens
+                const messageStyles = document.createElement('style');
+                messageStyles.textContent = `
+                    .message-container {
+                        margin-bottom: 15px;
+                        max-width: 80%;
+                        align-self: flex-start;
+                    }
+
+                    .message-container:last-child {
+                        margin-bottom: 0;
+                    }
+
+                    .message-header {
+                        display: flex;
+                        align-items: center;
+                        gap: 10px;
+                        margin-bottom: 5px;
+                    }
+
+                    .user-avatar {
+                        width: 30px;
+                        height: 30px;
+                        border-radius: 50%;
+                        object-fit: cover;
+                        border: 2px solid rgba(29, 161, 242, 0.3);
+                    }
+
+                    .user-info {
+                        display: flex;
+                        align-items: center;
+                        gap: 8px;
+                    }
+
+                    .username {
+                        color: #1DA1F2;
+                        font-weight: bold;
+                        font-size: 14px;
+                    }
+
+                    .admin-badge {
+                        background: linear-gradient(135deg, #FF6B6B, #FF3B30);
+                        color: white;
+                        padding: 2px 8px;
+                        border-radius: 12px;
+                        font-size: 12px;
+                        font-weight: bold;
+                        text-transform: uppercase;
+                        box-shadow: 0 2px 5px rgba(255, 59, 48, 0.3);
+                    }
+
+                    .message-content {
+                        padding: 10px 15px;
+                        border-radius: 15px;
+                        color: white;
+                        font-size: 14px;
+                        line-height: 1.4;
+                    }
+
+                    .user-message {
+                        background: #1DA1F2;
+                        margin-left: 40px;
+                        border-top-left-radius: 5px;
+                    }
+
+                    .system-message {
+                        background: rgba(255,255,255,0.1);
+                        margin-left: 40px;
+                        border-top-left-radius: 5px;
+                    }
+
+                    .message-container.user {
+                        align-self: flex-end;
+                    }
+
+                    .message-container.user .message-header {
+                        justify-content: flex-end;
+                    }
+
+                    .message-container.user .message-content {
+                        margin-right: 40px;
+                        margin-left: 0;
+                        border-top-right-radius: 5px;
+                        border-top-left-radius: 15px;
+                    }
+                `;
+                document.head.appendChild(messageStyles);
+
+                // Handle sending messages
+                sendMessage.addEventListener('click', () => {
+                    const message = messageInput.value.trim();
+                    if (message) {
+                        addMessage(message);
+                        messageInput.value = '';
+                    }
+                });
+
+                messageInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        const message = messageInput.value.trim();
+                        if (message) {
+                            addMessage(message);
+                            messageInput.value = '';
+                        }
+                    }
+                });
+
+                // Add some example messages
+                setTimeout(() => {
+                    addMessage('Olá! Bem-vindo ao chat!', false);
+                    addMessage('Como está gostando da obra?', false);
+                }, 1000);
+            </script>
+    </div>
+
+    <div class="keyboard-shortcuts">
+        <div class="shortcut-item">
+            <span class="key">Space</span>
+            <span>Play/Pause</span>
+        </div>
+        <div class="shortcut-item">
+            <span class="key">←</span>
+            <span>Previous Chapter</span>
+        </div>
+        <div class="shortcut-item">
+            <span class="key">→</span>
+            <span>Next Chapter</span>
+        </div>
+        <div class="shortcut-item">
+            <span class="key">F</span>
+            <span>Fullscreen</span>
+        </div>
+    </div>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <script>
+        class MangaPlayer {
+            constructor() {
+                this.initializeElements();
+                this.loadMangaData();
+                this.setupEventListeners();
+            }
+
+            initializeElements() {
+                this.videoContainer = document.getElementById('video-container');
+                this.mangaTitle = document.getElementById('manga-title');
+                this.chapterTitle = document.getElementById('chapter-title');
+                
+                this.playPauseBtn = document.getElementById('play-pause-btn');
+                this.volumeSlider = document.getElementById('volume-slider');
+                this.fullscreenBtn = document.getElementById('fullscreen-btn');
+            }
+
+            loadMangaData() {
+                try {
+                    const mangaAtual = JSON.parse(localStorage.getItem('manga_atual'));
+                    const selectedCapitulo = JSON.parse(localStorage.getItem('selectedCapitulo'));
+
+                    console.log('Manga Atual:', mangaAtual);
+                    console.log('Selected Capitulo:', selectedCapitulo);
+
+                    // Fallback for when mangaAtual is null but selectedCapitulo exists
+                    if (!mangaAtual && selectedCapitulo) {
+                        console.warn('Manga atual não encontrado. Usando informações do capítulo selecionado.');
+                        
+                        // Create a minimal manga object from selectedCapitulo
+                        this.mangaTitle.textContent = selectedCapitulo.donghuaTitulo || 'Título Desconhecido';
+                        
+                        // Create a temporary chapters array with the selected chapter
+                        const tempChapters = [{
+                            nome: `Capítulo ${selectedCapitulo.capituloNumero}`,
+                            videoUrl: selectedCapitulo.capituloLink
+                        }];
+
+                        this.renderChapterList(tempChapters);
+                    } else if (mangaAtual) {
+                        this.mangaTitle.textContent = mangaAtual.nome || 'Manga Desconhecido';
+
+                        // Filtrar e mostrar capítulos com vídeo
+                        const capitulosComVideo = mangaAtual.capitulos 
+                            ? mangaAtual.capitulos.filter(capitulo => 
+                                capitulo.videoUrl && 
+                                (capitulo.videoUrl.includes('youtube.com') || 
+                                 capitulo.videoUrl.includes('youtu.be') || 
+                                 capitulo.videoUrl.includes('terabox.com') ||
+                                 capitulo.videoUrl.includes('1024terabox.com') ||
+                                 capitulo.videoUrl.includes('playbook.com') ||
+                                 capitulo.videoUrl.includes('pb.com') ||
+                                 capitulo.videoUrl.includes('drive.google.com') ||
+                                 capitulo.videoUrl.includes('storage.googleapis.com') ||
+                                 capitulo.videoUrl.includes('googleusercontent.com') ||
+                                 ['.mp4', '.webm', '.ogg', '.mov', '.avi'].some(ext => capitulo.videoUrl.toLowerCase().includes(ext)))
+                            ) 
+                            : [];
+
+                        console.log('Total de Capítulos:', mangaAtual.capitulos?.length || 0);
+                        console.log('Capítulos com Vídeo:', capitulosComVideo.length);
+
+                        this.renderChapterList(mangaAtual.capitulos);
+                    }
+
+                    if (selectedCapitulo) {
+                        this.chapterTitle.textContent = `Capítulo: ${selectedCapitulo.capituloNumero || 'Desconhecido'}`;
+                        this.loadVideo(selectedCapitulo.capituloLink || selectedCapitulo.videoUrl);
+                    }
+                } catch (error) {
+                    console.error('Erro ao carregar dados do manga:', error);
+                    this.showErrorMessage('Não foi possível carregar os dados do manga.', {
+                        mangaAtual: JSON.parse(localStorage.getItem('manga_atual')),
+                        selectedCapitulo: JSON.parse(localStorage.getItem('selectedCapitulo'))
+                    });
+                }
+            }
+
+            loadVideo(videoUrl) {
+                console.log('Carregando vídeo:', videoUrl);
+
+                // Verificar tipos de URL suportados
+                if (videoUrl.includes('youtube.com') || videoUrl.includes('youtu.be')) {
+                    this.loadYouTubeVideo(videoUrl);
+                    return;
+                }
+
+                // Suporte para Terabox e links similares
+                if (videoUrl.includes('terabox.com') || videoUrl.includes('1024terabox.com')) {
+                    this.loadTeraboxVideo(videoUrl);
+                    return;
+                }
+
+                // Suporte para Playbook
+                if (videoUrl.includes('playbook.com') || videoUrl.includes('pb.com')) {
+                    this.loadPlaybookVideo(videoUrl);
+                    return;
+                }
+
+                // Suporte para Google Drive
+                if (videoUrl.includes('drive.google.com')) {
+                    this.loadGoogleDriveVideo(videoUrl);
+                    return;
+                }
+
+                // Suporte para Google Cloud Storage signed URLs
+                if (videoUrl.includes('storage.googleapis.com') || 
+                    videoUrl.includes('googleusercontent.com') ||
+                    (videoUrl.includes('Expires=') && videoUrl.includes('GoogleAccessId='))) {
+                    this.loadGoogleCloudStorageVideo(videoUrl);
+                    return;
+                }
+
+                // Suporte para links de vídeo diretos
+                const videoExtensions = ['.mp4', '.webm', '.ogg', '.mov', '.avi'];
+                if (videoExtensions.some(ext => videoUrl.toLowerCase().includes(ext))) {
+                    this.loadDirectVideoLink(videoUrl);
+                    return;
+                }
+
+                // Caso o link não seja reconhecido
+                this.showErrorMessage('Formato de vídeo não suportado', { videoUrl });
+            }
+
+            createCustomPlayerInterface(videoElement, videoUrl, videoSource) {
+                // Container principal do player
+                const playerContainer = document.createElement('div');
+                playerContainer.classList.add('custom-video-player', 'card', 'shadow-lg', 'border-0');
+                playerContainer.style.backgroundColor = 'var(--bs-dark)';
+                playerContainer.style.color = 'var(--bs-light)';
+
+                // Wrapper para o vídeo
+                const videoWrapper = document.createElement('div');
+                videoWrapper.classList.add('video-wrapper', 'position-relative');
+                videoWrapper.style.paddingBottom = '56.25%';
+                videoWrapper.style.backgroundColor = 'black';
+
+                // Adicionar vídeo ao wrapper
+                videoElement.classList.add('position-absolute', 'top-0', 'start-0', 'w-100', 'h-100');
+                videoWrapper.appendChild(videoElement);
+
+                // Controles personalizados
+                const controlsContainer = document.createElement('div');
+                controlsContainer.classList.add('custom-player-controls', 'd-flex', 'justify-content-between', 'align-items-center', 'p-3', 'bg-dark');
+
+                // Informações do vídeo
+                const videoInfo = document.createElement('div');
+                videoInfo.classList.add('video-info', 'd-flex', 'align-items-center');
+                videoInfo.innerHTML = `
+                    <span class="badge bg-info me-2">${videoSource}</span>
+                    <small class="text-muted">${this.truncateUrl(videoUrl)}</small>
+                `;
+
+                // Botões de ação
+                const actionButtons = document.createElement('div');
+                actionButtons.classList.add('action-buttons', 'd-flex', 'gap-2');
+                actionButtons.innerHTML = `
+                    <button class="btn btn-sm btn-outline-light copy-url-btn" title="Copiar URL">
+                        <i class="bi bi-clipboard"></i>
+                    </button>
+                    <a href="${videoUrl}" target="_blank" class="btn btn-sm btn-outline-light" title="Abrir link original">
+                        <i class="bi bi-box-arrow-up-right"></i>
+                    </a>
+                    <button class="btn btn-sm btn-outline-light reload-video-btn" title="Recarregar vídeo">
+                        <i class="bi bi-arrow-clockwise"></i>
+                    </button>
+                `;
+
+                // Adicionar eventos aos botões
+                const copyUrlBtn = actionButtons.querySelector('.copy-url-btn');
+                copyUrlBtn.addEventListener('click', () => {
+                    navigator.clipboard.writeText(videoUrl).then(() => {
+                        copyUrlBtn.innerHTML = '<i class="bi bi-clipboard-check text-success"></i>';
+                        setTimeout(() => {
+                            copyUrlBtn.innerHTML = '<i class="bi bi-clipboard"></i>';
+                        }, 2000);
+                    });
+                });
+
+                const reloadVideoBtn = actionButtons.querySelector('.reload-video-btn');
+                reloadVideoBtn.addEventListener('click', () => {
+                    this.loadVideo(videoUrl);
+                });
+
+                // Montar a estrutura
+                controlsContainer.appendChild(videoInfo);
+                controlsContainer.appendChild(actionButtons);
+
+                playerContainer.appendChild(videoWrapper);
+                playerContainer.appendChild(controlsContainer);
+
+                // Substituir o container de vídeo
+                this.videoContainer.innerHTML = '';
+                this.videoContainer.appendChild(playerContainer);
+            }
+
+            truncateUrl(url, maxLength = 50) {
+                return url.length > maxLength 
+                    ? url.substring(0, maxLength) + '...' 
+                    : url;
+            }
+
+            loadDirectVideoLink(videoUrl) {
+                console.log('Carregando vídeo direto:', videoUrl);
+
+                try {
+                    const videoElement = document.createElement('video');
+                    videoElement.src = videoUrl;
+                    videoElement.controls = true;
+                    videoElement.autoplay = true;
+
+                    this.createCustomPlayerInterface(videoElement, videoUrl, 'Vídeo Direto');
+
+                } catch (error) {
+                    console.error('Erro ao carregar vídeo direto:', error);
+                    this.showErrorMessage('Não foi possível carregar o vídeo', { videoUrl, error });
+                }
+            }
+
+            loadYouTubeVideo(videoUrl) {
+                console.log('Carregando vídeo do YouTube:', videoUrl);
+
+                try {
+                    const videoId = this.extractYouTubeVideoId(videoUrl);
+                    
+                    if (videoId) {
+                        const iframeElement = document.createElement('iframe');
+                        iframeElement.src = `https://www.youtube.com/embed/${videoId}`;
+                        iframeElement.allowFullscreen = true;
+                        iframeElement.width = '100%';
+                        iframeElement.height = '100%';
+
+                        this.createCustomPlayerInterface(iframeElement, videoUrl, 'YouTube');
+                    } else {
+                        this.showErrorMessage('Link do YouTube inválido', { videoUrl });
+                    }
+                } catch (error) {
+                    console.error('Erro ao carregar vídeo do YouTube:', error);
+                    this.showErrorMessage('Não foi possível carregar o vídeo', { videoUrl, error });
+                }
+            }
+
+            loadTeraboxVideo(videoUrl) {
+                console.log('Carregando vídeo do Terabox:', videoUrl);
+
+                try {
+                    const iframeElement = document.createElement('iframe');
+                    iframeElement.src = videoUrl;
+                    iframeElement.allowFullscreen = true;
+                    iframeElement.width = '100%';
+                    iframeElement.height = '100%';
+
+                    this.createCustomPlayerInterface(iframeElement, videoUrl, 'Terabox');
+
+                } catch (error) {
+                    console.error('Erro ao carregar vídeo do Terabox:', error);
+                    this.showErrorMessage('Não foi possível carregar o vídeo', { videoUrl, error });
+                }
+            }
+
+            loadPlaybookVideo(videoUrl) {
+                console.log('Carregando vídeo do Playbook:', videoUrl);
+
+                try {
+                    const iframeElement = document.createElement('iframe');
+                    iframeElement.src = videoUrl;
+                    iframeElement.allowFullscreen = true;
+                    iframeElement.width = '100%';
+                    iframeElement.height = '100%';
+
+                    this.createCustomPlayerInterface(iframeElement, videoUrl, 'Playbook');
+
+                } catch (error) {
+                    console.error('Erro ao carregar vídeo do Playbook:', error);
+                    this.showErrorMessage('Não foi possível carregar o vídeo', { videoUrl, error });
+                }
+            }
+
+            loadGoogleDriveVideo(videoUrl) {
+                console.log('Carregando vídeo do Google Drive:', videoUrl);
+
+                try {
+                    const driveFileId = this.extractGoogleDriveFileId(videoUrl);
+                    
+                    if (driveFileId) {
+                        const iframeElement = document.createElement('iframe');
+                        iframeElement.src = `https://drive.google.com/file/d/${driveFileId}/preview`;
+                        iframeElement.allowFullscreen = true;
+                        iframeElement.width = '100%';
+                        iframeElement.height = '100%';
+
+                        this.createCustomPlayerInterface(iframeElement, videoUrl, 'Google Drive');
+                    } else {
+                        this.showErrorMessage('Link do Google Drive inválido', { videoUrl });
+                    }
+                } catch (error) {
+                    console.error('Erro ao carregar vídeo do Google Drive:', error);
+                    this.showErrorMessage('Não foi possível carregar o vídeo', { videoUrl, error });
+                }
+            }
+
+            loadGoogleCloudStorageVideo(videoUrl) {
+                console.log('Carregando vídeo do Google Cloud Storage:', videoUrl);
+
+                try {
+                    const videoElement = document.createElement('video');
+                    videoElement.src = videoUrl;
+                    videoElement.controls = true;
+                    videoElement.autoplay = true;
+
+                    this.createCustomPlayerInterface(videoElement, videoUrl, 'Google Cloud Storage');
+
+                } catch (error) {
+                    console.error('Erro ao carregar vídeo do Google Cloud Storage:', error);
+                    this.showErrorMessage('Não foi possível carregar o vídeo', { videoUrl, error });
+                }
+            }
+
+            renderChapterList(capitulos) {
+                const videoExtensions = ['.mp4', '.webm', '.ogg', '.mov', '.avi'];
+                const chapterListContainer = document.getElementById('chapter-list');
+                chapterListContainer.innerHTML = ''; // Limpar lista existente
+
+                // Função para determinar a fonte do vídeo
+                const getVideoSource = (videoUrl) => {
+                    if (!videoUrl) return 'Sem Vídeo';
+                    if (videoUrl.includes('youtube.com')) return 'YouTube';
+                    if (videoUrl.includes('terabox.com') || videoUrl.includes('1024terabox.com')) return 'Terabox';
+                    if (videoUrl.includes('playbook.com') || videoUrl.includes('pb.com')) return 'Playbook';
+                    if (videoUrl.includes('drive.google.com')) return 'Google Drive';
+                    if (videoUrl.includes('storage.googleapis.com') || videoUrl.includes('googleusercontent.com')) return 'Google Cloud Storage';
+                    if (videoExtensions.some(ext => videoUrl.toLowerCase().includes(ext))) return 'Vídeo Direto';
+                    return 'Outro';
+                };
+
+                // Ordenar capítulos por número ou nome
+                const sortedCapitulos = capitulos.sort((a, b) => {
+                    // Extrair número do capítulo, se possível
+                    const extractNumber = (capitulo) => {
+                        const match = capitulo.nome ? capitulo.nome.match(/\d+/) : null;
+                        return match ? parseInt(match[0]) : Infinity;
+                    };
+
+                    return extractNumber(a) - extractNumber(b);
+                });
+
+                // Renderizar todos os capítulos
+                sortedCapitulos.forEach((capitulo, index) => {
+                    const videoSource = getVideoSource(capitulo.videoUrl);
+                    
+                    const chapterElement = document.createElement('div');
+                    chapterElement.classList.add('chapter-item', 'list-group-item', 'list-group-item-action', 'd-flex', 'justify-content-between', 'align-items-center');
+                    
+                    // Adicionar classe especial para capítulos sem vídeo
+                    if (videoSource === 'Sem Vídeo') {
+                        chapterElement.classList.add('text-muted');
+                    }
+
+                    chapterElement.innerHTML = `
+                        <div class="chapter-info">
+                            <h6 class="mb-1">${capitulo.nome || `Capítulo ${index + 1}`}</h6>
+                            ${capitulo.descricao ? `<small class="text-muted">${capitulo.descricao}</small>` : ''}
+                        </div>
+                        <div class="chapter-actions d-flex align-items-center">
+                            <span class="badge ${
+                                videoSource === 'Sem Vídeo' 
+                                    ? 'bg-secondary' 
+                                    : 'bg-info'
+                            } me-2">${videoSource}</span>
+                            ${capitulo.videoUrl ? `
+                                <button class="btn btn-sm btn-outline-primary play-chapter-btn" 
+                                    data-video-url="${capitulo.videoUrl}">
+                                    <i class="bi bi-play-fill"></i>
+                                </button>
+                            ` : ''}
+                        </div>
+                    `;
+
+                    // Adicionar evento de clique para reproduzir vídeo
+                    const playButton = chapterElement.querySelector('.play-chapter-btn');
+                    if (playButton) {
+                        playButton.addEventListener('click', () => {
+                            const videoUrl = playButton.getAttribute('data-video-url');
+                            this.loadVideo(videoUrl);
+                        });
+                    }
+
+                    chapterListContainer.appendChild(chapterElement);
+                });
+
+                // Destacar capítulo atual se existir
+                const selectedCapitulo = JSON.parse(localStorage.getItem('selectedCapitulo'));
+                if (selectedCapitulo) {
+                    const currentChapterElement = Array.from(chapterListContainer.children).find(
+                        el => el.querySelector('.chapter-info h6').textContent === selectedCapitulo.nome
+                    );
+                    if (currentChapterElement) {
+                        currentChapterElement.classList.add('active');
+                    }
+                }
+            }
+
+            changeChapter(capitulo) {
+                const mangaAtual = JSON.parse(localStorage.getItem('manga_atual'));
+                const capituloCompleto = {
+                    ...capitulo,
+                    mangaNome: mangaAtual.nome,
+                    mangaImagem: mangaAtual.imagem
+                };
+
+                localStorage.setItem('selectedCapitulo', JSON.stringify(capituloCompleto));
+                location.reload();
+            }
+
+            setupEventListeners() {
+                this.playPauseBtn.addEventListener('click', this.togglePlayPause.bind(this));
+                this.volumeSlider.addEventListener('input', this.adjustVolume.bind(this));
+                this.fullscreenBtn.addEventListener('click', this.toggleFullscreen.bind(this));
+            }
+
+            togglePlayPause() {
+                // Placeholder for play/pause logic
+                console.log('Play/Pause clicked');
+            }
+
+            adjustVolume() {
+                // Placeholder for volume adjustment
+                console.log('Volume adjusted:', this.volumeSlider.value);
+            }
+
+            toggleFullscreen() {
+                const videoWrapper = document.querySelector('.video-wrapper');
+                if (!document.fullscreenElement) {
+                    videoWrapper.requestFullscreen();
+                } else {
+                    document.exitFullscreen();
+                }
+            }
+
+            showErrorMessage(message, debugData = {}) {
+                this.videoContainer.innerHTML = `
+                    <div class="alert alert-danger text-center" role="alert">
+                        <i class="bi bi-exclamation-octagon"></i>
+                        ${message}
+                    </div>
+                `;
+                
+                // Adicionar informações de debug detalhadas
+                const debugInfo = document.createElement('pre');
+                debugInfo.classList.add('debug-info');
+                debugInfo.textContent = JSON.stringify(debugData, null, 2);
+                this.videoContainer.appendChild(debugInfo);
+
+                // Adicionar botão para tentar novamente
+                const retryButton = document.createElement('button');
+                retryButton.classList.add('btn', 'btn-warning', 'mt-3');
+                retryButton.textContent = 'Tentar Novamente';
+                retryButton.addEventListener('click', () => this.loadMangaData());
+                this.videoContainer.appendChild(retryButton);
+            }
+
+            extractYouTubeVideoId(url) {
+                // Regex para extrair ID de diferentes formatos de URL do YouTube
+                const youtubeRegex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
+                const match = url.match(youtubeRegex);
+                return match ? match[1] : null;
+            }
+
+            extractGoogleDriveFileId(url) {
+                // Regex para extrair ID de diferentes formatos de URL do Google Drive
+                const driveRegex = /\/d\/([a-zA-Z0-9_-]+)/;
+                const match = url.match(driveRegex);
+                return match ? match[1] : null;
+            }
+
+            generateUniqueChapterId(capitulo) {
+                // Combine manga title, chapter name, and optional description
+                const baseString = `${this.mangaTitle.textContent}_${capitulo.nome}_${capitulo.descricao || ''}`;
+                
+                // Create a simple hash function
+                let hash = 0;
+                for (let i = 0; i < baseString.length; i++) {
+                    const char = baseString.charCodeAt(i);
+                    hash = ((hash << 5) - hash) + char;
+                    hash = hash & hash; // Convert to 32-bit integer
+                }
+                
+                return `chapter_chat_${Math.abs(hash)}`;
+            }
+        }
+
+        // Initialize player when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            const player = new MangaPlayer();
+        });
+
+        // Fullscreen and Responsive Handling
+        document.addEventListener('DOMContentLoaded', function() {
+            const videoPlayer = document.getElementById('video-player');
+            const fullscreenBtn = document.getElementById('fullscreen-btn');
+            const playerContainer = document.querySelector('.player-container');
+
+            // Fullscreen Toggle Function
+            function toggleFullScreen() {
+                if (!document.fullscreenElement) {
+                    if (playerContainer.requestFullscreen) {
+                        playerContainer.requestFullscreen();
+                    } else if (playerContainer.mozRequestFullScreen) { // Firefox
+                        playerContainer.mozRequestFullScreen();
+                    } else if (playerContainer.webkitRequestFullscreen) { // Chrome, Safari and Opera
+                        playerContainer.webkitRequestFullscreen();
+                    } else if (playerContainer.msRequestFullscreen) { // IE/Edge
+                        playerContainer.msRequestFullscreen();
+                    }
+                    document.body.classList.add('fullscreen-mode');
+                } else {
+                    if (document.exitFullscreen) {
+                        document.exitFullscreen();
+                    } else if (document.mozCancelFullScreen) { // Firefox
+                        document.mozCancelFullScreen();
+                    } else if (document.webkitExitFullscreen) { // Chrome, Safari and Opera
+                        document.webkitExitFullscreen();
+                    } else if (document.msExitFullscreen) { // IE/Edge
+                        document.msExitFullscreen();
+                    }
+                    document.body.classList.remove('fullscreen-mode');
+                }
+            }
+
+            // Attach fullscreen toggle to button
+            if (fullscreenBtn) {
+                fullscreenBtn.addEventListener('click', toggleFullScreen);
+            }
+
+            // Handle fullscreen change events
+            document.addEventListener('fullscreenchange', handleFullscreenChange);
+            document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+            document.addEventListener('mozfullscreenchange', handleFullscreenChange);
+            document.addEventListener('MSFullscreenChange', handleFullscreenChange);
+
+            function handleFullscreenChange() {
+                const isFullscreen = !!(
+                    document.fullscreenElement || 
+                    document.webkitFullscreenElement || 
+                    document.mozFullScreenElement || 
+                    document.msFullscreenElement
+                );
+
+                if (fullscreenBtn) {
+                    fullscreenBtn.innerHTML = isFullscreen 
+                        ? '<i class="bi bi-fullscreen-exit"></i>' 
+                        : '<i class="bi bi-fullscreen"></i>';
+                }
+            }
+
+            // Responsive Video Resizing
+            function resizeVideoPlayer() {
+                const videoWrapper = document.querySelector('.video-wrapper');
+                const videoPlayer = document.getElementById('video-player');
+                
+                if (videoWrapper && videoPlayer) {
+                    const wrapperWidth = videoWrapper.clientWidth;
+                    const wrapperHeight = videoWrapper.clientHeight;
+                    
+                    // Maintain aspect ratio
+                    const videoAspectRatio = 16 / 9;
+                    const wrapperAspectRatio = wrapperWidth / wrapperHeight;
+
+                    if (wrapperAspectRatio > videoAspectRatio) {
+                        // Wrapper is wider, limit by height
+                        videoPlayer.style.height = '100%';
+                        videoPlayer.style.width = 'auto';
+                    } else {
+                        // Wrapper is taller, limit by width
+                        videoPlayer.style.width = '100%';
+                        videoPlayer.style.height = 'auto';
+                    }
+                }
+            }
+
+            // Initial resize and add resize listener
+            resizeVideoPlayer();
+            window.addEventListener('resize', resizeVideoPlayer);
+        });
+
+        MangaPlayer.prototype.renderChapterList = function(capitulos) {
+            const videoExtensions = ['.mp4', '.webm', '.ogg', '.mov', '.avi'];
+            const chapterListContainer = document.getElementById('chapter-list');
+            chapterListContainer.innerHTML = ''; // Limpar lista existente
+
+            // Função para determinar a fonte do vídeo
+            const getVideoSource = (videoUrl) => {
+                if (!videoUrl) return 'Sem Vídeo';
+                if (videoUrl.includes('youtube.com')) return 'YouTube';
+                if (videoUrl.includes('terabox.com') || videoUrl.includes('1024terabox.com')) return 'Terabox';
+                if (videoUrl.includes('playbook.com') || videoUrl.includes('pb.com')) return 'Playbook';
+                if (videoUrl.includes('drive.google.com')) return 'Google Drive';
+                if (videoUrl.includes('storage.googleapis.com') || videoUrl.includes('googleusercontent.com')) return 'Google Cloud Storage';
+                if (videoExtensions.some(ext => videoUrl.toLowerCase().includes(ext))) return 'Vídeo Direto';
+                return 'Outro';
+            };
+
+            // Ordenar capítulos por número ou nome
+            const sortedCapitulos = capitulos.sort((a, b) => {
+                const extractNumber = (capitulo) => {
+                    const match = capitulo.nome ? capitulo.nome.match(/\d+/) : null;
+                    return match ? parseInt(match[0]) : Infinity;
+                };
+
+                return extractNumber(a) - extractNumber(b);
+            });
+
+            // Renderizar todos os capítulos
+            sortedCapitulos.forEach((capitulo, index) => {
+                const videoSource = getVideoSource(capitulo.videoUrl);
+                
+                const chapterElement = document.createElement('div');
+                chapterElement.classList.add('chapter-item', 'list-group-item', 'list-group-item-action', 'd-flex', 'justify-content-between', 'align-items-center');
+                
+                // Adicionar classe especial para capítulos sem vídeo
+                if (videoSource === 'Sem Vídeo') {
+                    chapterElement.classList.add('text-muted');
+                }
+
+                chapterElement.innerHTML = `
+                    <div class="chapter-info">
+                        <h6 class="mb-1">${capitulo.nome || `Capítulo ${index + 1}`}</h6>
+                        ${capitulo.descricao ? `<small class="text-muted">${capitulo.descricao}</small>` : ''}
+                    </div>
+                    <div class="chapter-actions d-flex align-items-center">
+                        <span class="badge ${
+                            videoSource === 'Sem Vídeo' 
+                                ? 'bg-secondary' 
+                                : 'bg-info'
+                        } me-2">${videoSource}</span>
+                        ${capitulo.videoUrl ? `
+                            <button class="btn btn-sm btn-outline-primary play-chapter-btn" 
+                                data-video-url="${capitulo.videoUrl}">
+                                <i class="bi bi-play-fill"></i>
+                            </button>
+                        ` : ''}
+                    </div>
+                `;
+
+                // Adicionar evento de clique para reproduzir vídeo
+                const playButton = chapterElement.querySelector('.play-chapter-btn');
+                if (playButton) {
+                    playButton.addEventListener('click', () => {
+                        const videoUrl = playButton.getAttribute('data-video-url');
+                        this.loadVideo(videoUrl);
+                    });
+                }
+
+                chapterListContainer.appendChild(chapterElement);
+            });
+
+            // Destacar capítulo atual se existir
+            const selectedCapitulo = JSON.parse(localStorage.getItem('selectedCapitulo'));
+            if (selectedCapitulo) {
+                const currentChapterElement = Array.from(chapterListContainer.children).find(
+                    el => el.querySelector('.chapter-info h6').textContent === selectedCapitulo.nome
+                );
+                if (currentChapterElement) {
+                    currentChapterElement.classList.add('active');
+                }
+            }
+        };
+
+    </script>
+    <script src="seguranca/anti_inspect_v2.js"></script>
+</body>
+</html>

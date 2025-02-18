@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="SomDong - Perfil do Usuário">
+    <meta name="theme-color" content="#000000">
+    <title>SomDong - Perfil</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .profile-container {
+            max-width: 800px;
+            margin: 20px auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+        .profile-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .profile-cover {
+            position: relative;
+            height: 200px;
+            background: #e0e0e0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .cover-upload-btn {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .profile-avatar {
+            margin-top: -50px;
+            border-radius: 50%;
+            overflow: hidden;
+            width: 100px;
+            height: 100px;
+            border: 3px solid white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+        .profile-avatar img {
+            width: 100%;
+            height: auto;
+        }
+        .profile-actions {
+            margin: 20px 0;
+        }
+        .profile-section {
+            margin-bottom: 20px;
+        }
+        .profile-section h2 {
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 5px;
+        }
+        .save-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .danger-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .admin-card {
+            background: #f8f9fa;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        .admin-card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .admin-button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <!-- Menu Button -->
+    <button id="menuBtn" class="menu-btn" aria-label="Abrir menu">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+    </button>
+
+    <!-- Sidebar Menu -->
+    <nav id="sidebar" class="sidebar" aria-label="Menu principal">
+        <button id="closeBtn" class="close-btn" aria-label="Fechar menu">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+        <div class="sidebar-content">
+            <a href="index.html" class="sidebar-item" data-section="home">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                <span>Home</span>
+            </a>
+            <a href="biblioteca.html" class="sidebar-item" data-section="library">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
+                <span>Biblioteca</span>
+            </a>
+            <a href="perfil.html" class="sidebar-item active" data-section="profile">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                <span>Perfil</span>
+            </a>
+            <a href="login.html" class="sidebar-item" data-section="account">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path><polyline points="10 17 15 12 10 7"></polyline><line x1="15" y1="12" x2="3" y2="12"></line></svg>
+                <span>Conta</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="profile-container">
+            <div class="profile-header">
+                <div class="profile-cover">
+                    <label for="coverUpload" class="cover-upload-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+                        Alterar Capa
+                    </label>
+                    <input type="file" id="coverUpload" accept="image/*,.gif" hidden>
+                </div>
+                
+                <div class="profile-avatar-container">
+                    <div class="profile-avatar">
+                        <img id="avatarImg" src="https://source.unsplash.com/random/150x150" alt="Avatar">
+                        <label for="avatarUpload" class="avatar-upload-btn">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+                        </label>
+                        <input type="file" id="avatarUpload" accept="image/*,.gif" hidden>
+                    </div>
+                    <h1 id="profileUsername">Carregando...</h1>
+                    <span class="join-date">Membro desde: <span id="joinDate">Carregando...</span></span>
+                </div>
+                
+                <div class="profile-actions"></div>
+
+                <div class="profile-content">
+                    <div class="profile-section">
+                        <h2>Biografia</h2>
+                        <div class="bio-container">
+                            <textarea id="bioText" placeholder="Adicione sua biografia aqui..." maxlength="500"></textarea>
+                            <span class="bio-char-count">0/500</span>
+                            <button id="saveBioBtn" class="save-btn">Salvar Biografia</button>
+                        </div>
+                    </div>
+
+                    <div class="profile-section">
+                        <h2>Estatísticas</h2>
+                        <div class="stats-grid">
+                            <div class="stat-item">
+                                <span class="stat-value" id="totalWatched">0</span>
+                                <span class="stat-label">Donghuas Assistidos</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-value" id="totalEpisodes">0</span>
+                                <span class="stat-label">Episódios Assistidos</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-value" id="totalComments">0</span>
+                                <span class="stat-label">Comentários</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="profile-section">
+                        <h2>Configurações da Conta</h2>
+                        <div class="settings-container">
+                            <div class="setting-item">
+                                <label for="emailNotifications">Notificações por Email</label>
+                                <input type="checkbox" id="emailNotifications">
+                            </div>
+                            <div class="setting-item">
+                                <label for="privateProfile">Perfil Privado</label>
+                                <input type="checkbox" id="privateProfile">
+                            </div>
+                            <button id="saveSettingsBtn" class="save-btn">Salvar Configurações</button>
+                        </div>
+                    </div>
+
+                    <div class="profile-section">
+                        <h2>Ações da Conta</h2>
+                        <div class="account-actions">
+                            <button id="logoutBtn" class="danger-btn">Sair da Conta</button>
+                            <button id="deleteAccountBtn" class="danger-btn">Excluir Conta</button>
+                        </div>
+                    </div>
+
+                    <div id="adminSection" class="profile-section admin-section">
+                        <h2>Privilégios de Administrador</h2>
+                        <div class="admin-controls">
+                            <div class="admin-card">
+                                <div class="admin-card-header">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                                        <circle cx="9" cy="7" r="4"></circle>
+                                        <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+                                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                                    </svg>
+                                    <h3>Controle de Usuários</h3>
+                                </div>
+                                <p>Gerencie todos os usuários do sistema, incluindo banimentos e suspensões.</p>
+                                <button id="userControlBtn" class="admin-button">
+                                    Acessar Painel de Controle
+                                </button>
+                            </div>
+
+                            <div class="admin-card">
+                                <div class="admin-card-header">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                        <polyline points="14 2 14 8 20 8"></polyline>
+                                        <line x1="12" y1="18" x2="12" y2="12"></line>
+                                        <line x1="9" y1="15" x2="15" y2="15"></line>
+                                    </svg>
+                                    <h3>Upload de Donghua</h3>
+                                </div>
+                                <p>Adicione novos donghuas à plataforma com informações detalhadas.</p>
+                                <a href="upload-donghua.html" id="uploadDonghuaBtn" class="admin-button">
+                                    Adicionar Donghua
+                                </a>
+                            </div>
+
+                            <div class="admin-card">
+                                <div class="admin-card-header">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path>
+                                        <polyline points="14 2 14 8 20 8"></polyline>
+                                    </svg>
+                                    <h3>Gerenciar Conteúdo</h3>
+                                </div>
+                                <p>Adicione, edite ou remova donghuas e episódios do catálogo.</p>
+                                <button id="contentControlBtn" class="admin-button">
+                                    Gerenciar Conteúdo
+                                </button>
+                            </div>
+
+                            <div class="admin-card">
+                                <div class="admin-card-header">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <line x1="18" y1="20" x2="18" y2="10"></line>
+                                        <line x1="12" y1="20" x2="12" y2="4"></line>
+                                        <line x1="6" y1="20" x2="6" y2="14"></line>
+                                    </svg>
+                                    <h3>Relatórios e Estatísticas</h3>
+                                </div>
+                                <p>Visualize estatísticas detalhadas e relatórios de uso do sistema.</p>
+                                <button id="reportsBtn" class="admin-button">
+                                    Ver Relatórios
+                                </button>
+                            </div>
+
+                            <div class="admin-card">
+                                <div class="admin-card-header">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <circle cx="12" cy="12" r="3"></circle>
+                                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33H9a2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                                    </svg>
+                                    <h3>Configurações do Sistema</h3>
+                                </div>
+                                <p>Configure parâmetros do sistema e gerencie recursos globais.</p>
+                                <button id="systemConfigBtn" class="admin-button">
+                                    Configurar Sistema
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="perfil.js" defer></script>
+    <script src="menu.js" defer></script>
+    <script src="seguranca/anti_inspect_v2.js"></script>
+</body>
+</html>

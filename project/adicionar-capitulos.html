@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adicionar Capítulos</title>
+    <style>
+        body {
+            background-color: black;
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+            color: white;
+        }
+
+        .capitulos-container {
+            width: 100%;
+            max-width: 600px;
+            background-color: #1a1a1a;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 4px 6px rgba(255, 255, 255, 0.1);
+        }
+
+        .capitulo-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .capitulo-form input,
+        .capitulo-form textarea {
+            background-color: #2a2a2a;
+            border: 1px solid #3a3a3a;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .capitulo-form input::placeholder,
+        .capitulo-form textarea::placeholder {
+            color: #888;
+        }
+
+        .form-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .btn {
+            flex-grow: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .btn-primary {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .btn-secondary {
+            background-color: #2196F3;
+            color: white;
+        }
+
+        .capitulos-lista {
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #3a3a3a;
+            border-radius: 8px;
+            padding: 10px;
+            margin-top: 20px;
+        }
+
+        .capitulo-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #3a3a3a;
+            color: white;
+        }
+
+        .capitulo-item:last-child {
+            border-bottom: none;
+        }
+
+        .capitulo-remover {
+            background-color: #f44336;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .donghua-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 30px;
+            background-color: #2a2a2a;
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        .donghua-header img {
+            max-width: 100px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="capitulos-container">
+        <div id="donghuaHeader" class="donghua-header">
+            <!-- Informações do donghua serão carregadas aqui -->
+        </div>
+
+        <h1>Adicionar Capítulos</h1>
+        <form id="capituloForm" class="capitulo-form">
+            <input type="text" id="capituloNumero" placeholder="Número do Capítulo" required>
+            <input type="text" id="capituloTitulo" placeholder="Título do Capítulo" required>
+            <textarea id="capituloDescricao" placeholder="Descrição do Capítulo" required></textarea>
+            <input type="text" id="capituloLink" placeholder="Link do Capítulo" required>
+
+            <div class="form-buttons">
+                <button type="button" id="adicionarCapituloBtn" class="btn btn-primary">Adicionar Capítulo</button>
+                <button type="button" id="finalizarBtn" class="btn btn-secondary">Finalizar</button>
+            </div>
+        </form>
+
+        <div class="capitulos-lista" id="capitulosLista">
+            <!-- Capítulos serão adicionados aqui dinamicamente -->
+        </div>
+    </div>
+
+    <script>
+        const capituloForm = document.getElementById('capituloForm');
+        const adicionarCapituloBtn = document.getElementById('adicionarCapituloBtn');
+        const finalizarBtn = document.getElementById('finalizarBtn');
+        const capitulosLista = document.getElementById('capitulosLista');
+        const donghuaHeader = document.getElementById('donghuaHeader');
+
+        let capitulos = [];
+        let selectedDonghua = null;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Recuperar dados do donghua selecionado
+            selectedDonghua = JSON.parse(localStorage.getItem('selectedDonghua'));
+
+            if (selectedDonghua) {
+                // Atualizar cabeçalho com informações do donghua
+                donghuaHeader.innerHTML = `
+                    <img src="${selectedDonghua.imagem}" alt="${selectedDonghua.titulo}">
+                    <div>
+                        <h2>${selectedDonghua.titulo}</h2>
+                        <p>${selectedDonghua.genero} - ${selectedDonghua.capitulos} Capítulos</p>
+                    </div>
+                `;
+            }
+        });
+
+        adicionarCapituloBtn.addEventListener('click', function() {
+            const numero = document.getElementById('capituloNumero').value;
+            const titulo = document.getElementById('capituloTitulo').value;
+            const descricao = document.getElementById('capituloDescricao').value;
+            const link = document.getElementById('capituloLink').value;
+
+            if (numero && titulo && descricao && link) {
+                const capitulo = { numero, titulo, descricao, link };
+                capitulos.push(capitulo);
+
+                // Adicionar à lista
+                const capituloItem = document.createElement('div');
+                capituloItem.classList.add('capitulo-item');
+                capituloItem.innerHTML = `
+                    <div>
+                        <strong>Capítulo ${numero}</strong>: ${titulo}
+                        <p>${descricao}</p>
+                    </div>
+                    <button class="capitulo-remover" onclick="removerCapitulo(this)">✖</button>
+                `;
+                capitulosLista.appendChild(capituloItem);
+
+                // Limpar formulário
+                capituloForm.reset();
+            } else {
+                alert('Por favor, preencha todos os campos do capítulo.');
+            }
+        });
+
+        function removerCapitulo(btn) {
+            const capituloItem = btn.closest('.capitulo-item');
+            const index = Array.from(capitulosLista.children).indexOf(capituloItem);
+            capitulos.splice(index, 1);
+            capituloItem.remove();
+        }
+
+        finalizarBtn.addEventListener('click', function() {
+            if (selectedDonghua && capitulos.length > 0) {
+                // Recuperar lista de cards
+                const existingCards = JSON.parse(localStorage.getItem('donghuaCards') || '[]');
+
+                // Encontrar e atualizar o card do donghua
+                const donghuaIndex = existingCards.findIndex(card => card.titulo === selectedDonghua.titulo);
+                if (donghuaIndex !== -1) {
+                    existingCards[donghuaIndex].listaCapitulos = capitulos;
+                    localStorage.setItem('donghuaCards', JSON.stringify(existingCards));
+                    
+                    // Redirecionar para index
+                    window.location.href = 'index.html';
+                } else {
+                    alert('Donghua não encontrado. Por favor, crie o donghua primeiro.');
+                }
+            } else {
+                alert('Adicione pelo menos um capítulo antes de finalizar.');
+            }
+        });
+    </script>
+</body>
+</html>

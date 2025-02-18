@@ -1,0 +1,180 @@
+/* Estilos para os Cards de Obras */
+.obras-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 2.5rem;
+    padding: 2rem;
+    background: rgba(21,32,43,0.5);
+    border-radius: 25px;
+    backdrop-filter: blur(10px);
+}
+
+.obra-card {
+    background: linear-gradient(145deg, #192734, #22303C);
+    border-radius: 20px;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.obra-image {
+    position: relative;
+    height: 220px;
+    overflow: hidden;
+}
+
+.obra-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.obra-card:hover .obra-image img {
+    transform: scale(1.1);
+}
+
+.obra-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top,
+        rgba(25,39,52,0.9),
+        transparent 50%
+    );
+}
+
+.obra-status {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255,255,255,0.2);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    z-index: 2;
+    background: rgba(29,161,242,0.2);
+    color: #1DA1F2;
+}
+
+.obra-info {
+    padding: 20px;
+    position: relative;
+}
+
+.obra-info h3 {
+    font-size: 1.2rem;
+    color: #fff;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+.obra-info p {
+    color: rgba(255,255,255,0.7);
+    font-size: 0.9rem;
+    margin-bottom: 15px;
+    line-height: 1.5;
+}
+
+.obra-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 15px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+.obra-stats {
+    display: flex;
+    gap: 15px;
+}
+
+.obra-chapters, .obra-rating, .obra-genre {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 12px;
+    border-radius: 15px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.obra-chapters {
+    background: rgba(29,161,242,0.1);
+    color: #1DA1F2;
+}
+
+.obra-rating {
+    background: rgba(255,215,0,0.1);
+    color: #FFD700;
+}
+
+.obra-genre {
+    background: rgba(255,64,129,0.1);
+    color: #FF4081;
+}
+
+.obra-rank {
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: linear-gradient(180deg, #FFD700, #FFA500);
+    color: white;
+    padding: 8px 10px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    z-index: 2;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+    box-shadow: 2px 2px 8px rgba(0,0,0,0.2);
+    height: 200px;
+    text-align: center;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    width: 25px;
+    padding-top: 25px;
+}
+
+.obra-rank::before {
+    content: '#';
+    position: absolute;
+    top: 4px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 0.8rem;
+    opacity: 0.8;
+}
+
+.obra-rank::after {
+    content: '';
+    position: absolute;
+    bottom: -30px;
+    left: 0;
+    width: 0;
+    height: 0;
+    border-left: 12.5px solid transparent;
+    border-right: 12.5px solid transparent;
+    border-top: 30px solid #FFA500;
+}
+
+/* Hover Effects */
+.obra-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+    border-color: rgba(29,161,242,0.3);
+}
+
+.obra-chapters:hover, .obra-rating:hover, .obra-genre:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.1);
+}

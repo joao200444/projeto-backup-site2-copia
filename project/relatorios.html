@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatórios e Estatísticas - Donghua</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Chart.js para gráficos -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Flatpickr para calendário -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/pt.js"></script>
+    <!-- CryptoJS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/aes.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/sha256.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="main-header">
+            <nav class="nav-menu">
+                <div class="logo">
+                    <a href="index.html">Donghua</a>
+                </div>
+                <ul class="nav-links">
+                    <li><a href="index.html">Início</a></li>
+                    <li><a href="biblioteca.html">Biblioteca</a></li>
+                    <li><a href="perfil.html">Perfil</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <!-- Main Content -->
+        <main class="reports-container">
+            <div class="reports-header">
+                <h1>Relatórios e Estatísticas</h1>
+                <div class="date-filter">
+                    <input type="text" id="dateRange" placeholder="Selecione o período">
+                </div>
+            </div>
+
+            <div class="dashboard-grid">
+                <!-- Cards de Métricas -->
+                <div class="metric-cards">
+                    <div class="metric-card total-users">
+                        <h3>Total de Usuários</h3>
+                        <p id="totalUsers">0</p>
+                    </div>
+                    <div class="metric-card active-users">
+                        <h3>Usuários Ativos</h3>
+                        <p id="activeUsers">0</p>
+                    </div>
+                    <div class="metric-card total-donghuas">
+                        <h3>Total de Donghuas</h3>
+                        <p id="totalDonghuas">0</p>
+                    </div>
+                    <div class="metric-card total-views">
+                        <h3>Total de Visualizações</h3>
+                        <p id="totalViews">0</p>
+                    </div>
+                </div>
+
+                <!-- Gráficos -->
+                <div class="charts-container">
+                    <!-- Gráfico de Usuários Logados -->
+                    <div class="chart-card">
+                        <h3>Usuários Logados por Dia</h3>
+                        <canvas id="loginChart"></canvas>
+                    </div>
+
+                    <!-- Gráfico de Donghuas Mais Vistos -->
+                    <div class="chart-card">
+                        <h3>Donghuas Mais Vistos</h3>
+                        <canvas id="popularDonghuasChart"></canvas>
+                    </div>
+
+                    <!-- Gráfico de Distribuição de Categorias -->
+                    <div class="chart-card">
+                        <h3>Distribuição por Categoria</h3>
+                        <canvas id="categoriesChart"></canvas>
+                    </div>
+
+                    <!-- Gráfico de Novos Usuários -->
+                    <div class="chart-card">
+                        <h3>Novos Usuários por Dia</h3>
+                        <canvas id="newUsersChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Tabela de Atividades Recentes -->
+                <div class="recent-activities">
+                    <h3>Atividades Recentes</h3>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Data</th>
+                                    <th>Usuário</th>
+                                    <th>Ação</th>
+                                    <th>Detalhes</th>
+                                </tr>
+                            </thead>
+                            <tbody id="activitiesTable">
+                                <!-- Será preenchido via JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="relatorios.js"></script>
+</body>
+</html>

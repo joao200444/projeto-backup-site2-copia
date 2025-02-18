@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configurações do Sistema - SomDong</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header class="main-header">
+            <nav class="main-nav">
+                <div class="nav-brand">
+                    <a href="index.html">SomDong</a>
+                </div>
+                <div class="nav-links">
+                    <a href="index.html">Início</a>
+                    <a href="biblioteca.html">Biblioteca</a>
+                    <a href="perfil.html" id="perfilLink">Perfil</a>
+                    <button id="logoutBtn" onclick="logout()">Sair</button>
+                </div>
+            </nav>
+        </header>
+
+        <main class="config-page">
+            <h1>Configurações do Sistema</h1>
+            
+            <div class="config-sections">
+                <!-- Seção de Aparência -->
+                <div class="config-section">
+                    <h3>Aparência</h3>
+                    <div class="config-option">
+                        <label>Tema do Sistema</label>
+                        <select id="themeSelect">
+                            <option value="light">Claro</option>
+                            <option value="dark">Escuro</option>
+                            <option value="auto">Automático</option>
+                        </select>
+                    </div>
+                    <div class="config-option">
+                        <label>
+                            <input type="checkbox" id="animationsToggle">
+                            Ativar Animações
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Seção de Idioma -->
+                <div class="config-section">
+                    <h3>Idioma e Região</h3>
+                    <div class="config-option">
+                        <label>Idioma do Sistema</label>
+                        <select id="languageSelect">
+                            <option value="pt-BR">Português (Brasil)</option>
+                            <option value="en">English</option>
+                            <option value="es">Español</option>
+                            <option value="zh">中文</option>
+                        </select>
+                    </div>
+                    <div class="config-option">
+                        <label>Formato de Data</label>
+                        <select id="dateFormatSelect">
+                            <option value="dd/mm/yyyy">DD/MM/YYYY</option>
+                            <option value="mm/dd/yyyy">MM/DD/YYYY</option>
+                            <option value="yyyy-mm-dd">YYYY-MM-DD</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Seção de Notificações -->
+                <div class="config-section">
+                    <h3>Notificações</h3>
+                    <div class="config-option">
+                        <label>
+                            <input type="checkbox" id="emailNotifToggle">
+                            Notificações por E-mail
+                        </label>
+                    </div>
+                    <div class="config-option">
+                        <label>
+                            <input type="checkbox" id="pushNotifToggle">
+                            Notificações Push
+                        </label>
+                    </div>
+                    <div class="config-option">
+                        <label>
+                            <input type="checkbox" id="updateNotifToggle">
+                            Notificar Novos Episódios
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Seção de Privacidade -->
+                <div class="config-section">
+                    <h3>Privacidade e Segurança</h3>
+                    <div class="config-option">
+                        <label>
+                            <input type="checkbox" id="twoFactorToggle">
+                            Autenticação em Dois Fatores
+                        </label>
+                    </div>
+                    <div class="config-option">
+                        <label>
+                            <input type="checkbox" id="activityLogToggle">
+                            Registrar Atividades do Sistema
+                        </label>
+                    </div>
+                    <div class="config-option">
+                        <label>Tempo de Sessão (minutos)</label>
+                        <select id="sessionTimeSelect">
+                            <option value="30">30 minutos</option>
+                            <option value="60">1 hora</option>
+                            <option value="120">2 horas</option>
+                            <option value="240">4 horas</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Seção de Cache -->
+                <div class="config-section">
+                    <h3>Cache e Armazenamento</h3>
+                    <div class="config-option">
+                        <label>
+                            <input type="checkbox" id="autoCleanCache">
+                            Limpar Cache Automaticamente
+                        </label>
+                    </div>
+                    <div class="config-option">
+                        <button id="clearCacheBtn" class="secondary-button">
+                            Limpar Cache Agora
+                        </button>
+                    </div>
+                    <div class="storage-info">
+                        <span>Uso de Armazenamento: </span>
+                        <span id="storageUsage">0 MB</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="config-actions">
+                <button class="cancel-button" onclick="window.location.href='perfil.html'">Voltar</button>
+                <button class="save-button" onclick="saveConfig()">Salvar Alterações</button>
+            </div>
+        </main>
+    </div>
+
+    <script src="configuracaodosistema.js"></script>
+    <script src="auth.js"></script>
+</body>
+</html>

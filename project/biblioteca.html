@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SomDong - Biblioteca de Donghua</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/biblioteca.css">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body, html {
+            background-color: black !important;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            color: white;
+        }
+
+        /* Menu Button Styles */
+        .menu-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            padding: 10px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .menu-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+        }
+
+        .menu-btn svg {
+            color: white;
+            width: 24px;
+            height: 24px;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -300px;
+            width: 300px;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 1001;
+            transition: left 0.3s ease;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
+        }
+
+        .sidebar.active {
+            left: 0;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+        }
+
+        .sidebar-content {
+            padding: 60px 20px 20px;
+        }
+
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .sidebar-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-item svg {
+            margin-right: 15px;
+        }
+
+        .sidebar-item span {
+            font-size: 16px;
+        }
+
+        /* Obras Grid Styles */
+        .obras-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 2rem;
+            padding: 2rem;
+        }
+
+        .obra-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 2px solid transparent;
+            cursor: pointer;
+        }
+
+        .obra-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            border-color: rgba(165, 180, 252, 0.5);
+        }
+
+        .obra-image {
+            position: relative;
+            width: 100%;
+            padding-top: 150%;
+            overflow: hidden;
+        }
+
+        .obra-image img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .obra-card:hover .obra-image img {
+            transform: scale(1.05);
+        }
+
+        .obra-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.2), rgba(0,0,0,0.8));
+            display: flex;
+            align-items: flex-start;
+            padding: 1rem;
+        }
+
+        .obra-status {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .obra-status-andamento {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+        }
+
+        .obra-status-completo {
+            background: linear-gradient(135deg, #10b981, #059669);
+        }
+
+        .obra-status-novo {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+        }
+
+        .obra-info {
+            padding: 1.5rem;
+        }
+
+        .obra-info h3 {
+            margin: 0 0 0.5rem;
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .obra-info p {
+            margin: 0 0 1rem;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.875rem;
+            line-height: 1.5;
+        }
+
+        .obra-details {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.875rem;
+        }
+
+        .obra-genre, .obra-chapters {
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .obra-ranking {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: linear-gradient(135deg, #4267B2, #a5b4fc);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.875rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .obra-crown {
+            position: absolute;
+            top: 30px;
+            left: 10px;
+            font-size: 40px;
+            animation: crown-float 3s ease-in-out infinite,
+                       crown-color-shift 5s infinite alternate;
+            transform-origin: center;
+            z-index: 2;
+        }
+
+        @keyframes crown-float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes crown-color-shift {
+            0%, 100% { 
+                color: gold;
+                text-shadow: 0 0 10px rgba(255, 215, 0, 0.7);
+            }
+            50% { 
+                color: #FFA500;
+                text-shadow: 0 0 20px rgba(255, 140, 0, 0.9);
+            }
+        }
+
+        /* Estilo do botão flutuante de adicionar */
+        .add-button {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 65px;
+            height: 65px;
+            background: linear-gradient(135deg, #4267B2, #a5b4fc);
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(66, 103, 178, 0.3);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .add-button:hover {
+            transform: scale(1.1) rotate(90deg);
+            box-shadow: 0 6px 20px rgba(66, 103, 178, 0.4);
+        }
+
+        .add-button:active {
+            transform: scale(0.95);
+        }
+
+        .add-button svg {
+            width: 35px;
+            height: 35px;
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .add-button:hover svg {
+            transform: scale(1.2);
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(66, 103, 178, 0.4); }
+            70% { box-shadow: 0 0 0 15px rgba(66, 103, 178, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(66, 103, 178, 0); }
+        }
+
+        .add-button {
+            animation: pulse 2s infinite;
+        }
+    </style>
+</head>
+<body class="bg-black" style="background-color: black !important;">
+    <!-- Menu Button -->
+    <button id="menuBtn" class="menu-btn" aria-label="Abrir menu">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+    </button>
+
+    <!-- Sidebar Menu -->
+    <nav id="sidebar" class="sidebar" aria-label="Menu principal">
+        <button id="closeBtn" class="close-btn" aria-label="Fechar menu">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+        <div class="sidebar-content">
+            <a href="index.html" class="sidebar-item" data-section="home">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                <span>Home</span>
+            </a>
+            <a href="biblioteca.html" class="sidebar-item" data-section="library">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
+                <span>Biblioteca</span>
+            </a>
+            <a href="perfil.html" class="sidebar-item" data-section="profile">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                <span>Perfil</span>
+            </a>
+            <a href="login.html" class="sidebar-item" data-section="account">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path><polyline points="10 17 15 12 10 7"></polyline><line x1="15" y1="12" x2="3" y2="12"></line></svg>
+                <span>Conta</span>
+            </a>
+            <a href="#config" class="sidebar-item" data-section="config">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><path d="M12 9v2m0 4h.01"></path></svg>
+                <span>Config do Site</span>
+            </a>
+            <a href="#" class="sidebar-item" data-section="resolution" id="changeResolutionLink">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                    <line x1="3" y1="9" x2="21" y2="9"></line>
+                </svg>
+                <span>Resolução</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Navigation Menu -->
+    <nav id="menu" class="fixed top-0 left-0 w-full z-50">
+        <!-- Menu content will be loaded by menu.js -->
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Botão de adicionar -->
+        <button class="add-button" onclick="window.location.href='adicionador-biblioteca.html'" title="Adicionar à Biblioteca">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 0v10m-5 0h10" />
+            </svg>
+        </button>
+        <!-- Header com Pesquisa e Filtros -->
+        <header class="biblioteca-header">
+            <div class="header-content">
+                <h1 class="animated-title">Biblioteca de Donghua</h1>
+                <p class="animated-subtitle">Sua Coleção de Animação Chinesa</p>
+                
+                <!-- Barra de Pesquisa -->
+                <div class="search-bar">
+                    <input type="text" id="searchDonghua" placeholder="Pesquisar por título, gênero ou estúdio..." 
+                           class="search-input">
+                    <button class="search-btn">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Filtros e Ordenação -->
+        <section class="filters-section">
+            <div class="filters-container">
+                <div class="filter-group">
+                    <select id="genreFilter" class="filter-select">
+                        <option value="">Todos os Gêneros</option>
+                        <option value="acao">Ação</option>
+                        <option value="aventura">Aventura</option>
+                        <option value="cultivo">Cultivo</option>
+                        <option value="artes-marciais">Artes Marciais</option>
+                        <option value="fantasia">Fantasia</option>
+                        <option value="xianxia">Xianxia</option>
+                        <option value="xuanhuan">Xuanhuan</option>
+                    </select>
+                    <select id="statusFilter" class="filter-select">
+                        <option value="">Status</option>
+                        <option value="lancamento">Em Lançamento</option>
+                        <option value="completo">Completo</option>
+                        <option value="hiato">Em Hiato</option>
+                    </select>
+                    <select id="yearFilter" class="filter-select">
+                        <option value="">Ano</option>
+                        <option value="2024">2024</option>
+                        <option value="2023">2023</option>
+                        <option value="2022">2022</option>
+                        <option value="2021">2021</option>
+                    </select>
+                </div>
+                <div class="sort-group">
+                    <select id="sortBy" class="filter-select">
+                        <option value="recent">Mais Recentes</option>
+                        <option value="rating">Melhor Avaliados</option>
+                        <option value="popularity">Mais Populares</option>
+                        <option value="episodes">Número de Episódios</option>
+                    </select>
+                </div>
+            </div>
+        </section>
+
+        <!-- Categorias Rápidas -->
+        <section class="quick-categories">
+            <div class="categories-container">
+                <button class="category-btn active" data-category="all">
+                    <i class="fas fa-border-all"></i>
+                    Todos
+                </button>
+                <button class="category-btn" data-category="watching">
+                    <i class="fas fa-play-circle"></i>
+                    Assistindo
+                </button>
+                <button class="category-btn" data-category="favorites">
+                    <i class="fas fa-heart"></i>
+                    Favoritos
+                </button>
+                <button class="category-btn" data-category="completed">
+                    <i class="fas fa-check-circle"></i>
+                    Completados
+                </button>
+                <button class="category-btn" data-category="watchlist">
+                    <i class="fas fa-list"></i>
+                    Lista de Espera
+                </button>
+                <button class="category-btn" data-category="recommendations">
+                    <i class="fas fa-star"></i>
+                    Recomendados
+                </button>
+            </div>
+        </section>
+
+        <!-- Grid de Donghuas -->
+        <section class="donghua-grid">
+            <div id="donghuasContainer" class="obras-grid">
+                <div class="obra-card">
+                    <div class="obra-image">
+                        <img src="https://i.pinimg.com/originals/75/90/99/7590994f96261ea1be22eb2c77effd32.jpg" alt="Donghua 1">
+                        <div class="obra-ranking">Top 1</div>
+                    </div>
+                    <div class="obra-info">
+                        <h3 class="obra-title">Battle Through The Heavens</h3>
+                        <p class="obra-description">Um jovem que perdeu seus poderes embarca em uma jornada para recuperar sua força e descobrir a verdade sobre seu passado.</p>
+                        <span class="obra-status status-em-andamento">Em Andamento</span>
+                    </div>
+                </div>
+
+                <div class="obra-card">
+                    <div class="obra-image">
+                        <img src="https://www.animesoulking.com/wp-content/uploads/2021/04/perfect-world.jpg" alt="Donghua 2">
+                        <div class="obra-ranking">Top 2</div>
+                    </div>
+                    <div class="obra-info">
+                        <h3 class="obra-title">Perfect World</h3>
+                        <p class="obra-description">Em um mundo de cultivo, um jovem guerreiro busca o caminho da perfeição e da imortalidade.</p>
+                        <span class="obra-status status-novo">Novo</span>
+                    </div>
+                </div>
+
+                <div class="obra-card">
+                    <div class="obra-image">
+                        <img src="https://www.animesoulking.com/wp-content/uploads/2021/04/soul-land.jpg" alt="Donghua 3">
+                        <div class="obra-ranking">Top 3</div>
+                    </div>
+                    <div class="obra-info">
+                        <h3 class="obra-title">Soul Land</h3>
+                        <p class="obra-description">Uma história épica de reencarnação, onde um poderoso mestre de artes marciais renasce em um mundo de almas e magia.</p>
+                        <span class="obra-status status-completo">Completo</span>
+                    </div>
+                </div>
+
+                <div class="obra-card">
+                    <div class="obra-image">
+                        <img src="https://www.animesoulking.com/wp-content/uploads/2021/04/martial-universe.jpg" alt="Donghua 4">
+                        <div class="obra-ranking">Top 4</div>
+                    </div>
+                    <div class="obra-info">
+                        <h3 class="obra-title">Martial Universe</h3>
+                        <p class="obra-description">Lin Dong, um jovem de uma pequena cidade, embarca em uma jornada para se tornar um poderoso cultivador.</p>
+                        <span class="obra-status status-em-andamento">Em Andamento</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Estado Vazio -->
+            <div id="emptyState" class="empty-state hidden">
+                <i class="fas fa-folder-open empty-icon"></i>
+                <h3>Nenhum Donghua Encontrado</h3>
+                <p>Tente ajustar seus filtros ou adicione novos donghuas à sua biblioteca</p>
+                <button id="exploreBtn" class="explore-btn">
+                    <i class="fas fa-compass"></i>
+                    Explorar Donghuas
+                </button>
+            </div>
+
+            <!-- Paginação -->
+            <div class="pagination">
+                <button id="prevPage" class="page-btn" disabled>
+                    <i class="fas fa-chevron-left"></i>
+                    Anterior
+                </button>
+                <div class="page-info">
+                    <span>Página</span>
+                    <input type="number" id="currentPage" value="1" min="1" max="10">
+                    <span>de <span id="totalPages">10</span></span>
+                </div>
+                <button id="nextPage" class="page-btn">
+                    Próximo
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal de Detalhes do Donghua -->
+    <div id="donghuaModal" class="modal hidden">
+        <div class="modal-content">
+            <button class="modal-close">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="modal-header">
+                <img src="" alt="" class="modal-cover">
+                <div class="modal-info">
+                    <h2 class="modal-title"></h2>
+                    <div class="modal-meta">
+                        <span class="modal-year"></span>
+                        <span class="modal-episodes"></span>
+                        <span class="modal-studio"></span>
+                    </div>
+                    <div class="modal-genres"></div>
+                    <div class="modal-rating">
+                        <div class="stars"></div>
+                        <span class="rating-value"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body">
+                <p class="modal-description"></p>
+                <div class="modal-actions">
+                    <button class="action-btn watch-btn">
+                        <i class="fas fa-play"></i>
+                        Assistir
+                    </button>
+                    <button class="action-btn favorite-btn">
+                        <i class="fas fa-heart"></i>
+                        Favoritar
+                    </button>
+                    <button class="action-btn list-btn">
+                        <i class="fas fa-plus"></i>
+                        Adicionar à Lista
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <script src="js/biblioteca-logger.js"></script>
+    <script src="js/biblioteca.js"></script>
+    <script src="menu.js" defer></script>
+</body>
+</html>

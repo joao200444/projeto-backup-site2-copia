@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Obras - Biblioteca</title>
+    <link rel="stylesheet" href="css/bibliotecatext.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="site-header">
+        <div class="header-container">
+            <div class="logo">
+                <a href="http://127.0.0.1:5502/project/index.html"><img src="imagem/logo_size.webp" alt="Logo do Site"></a>
+            </div>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="http://127.0.0.1:5502/project/index.html"><i class="fas fa-dragon"></i> Início</a></li>
+                    <li><a href="http://127.0.0.1:5502/project/bibliotecatext.html" class="active"><i class="fas fa-scroll"></i> Biblioteca</a></li>
+                    <li><a href="#"><i class="fas fa-fire"></i> Lançamentos</a></li>
+                    <li><a href="#"><i class="fas fa-crown"></i> Populares</a></li>
+                    <li><a href="http://127.0.0.1:5502/project/perfil.html"><i class="fas fa-ninja"></i> Perfil</a></li>
+                    <li><a href="http://127.0.0.1:5502/project/login.html"><i class="fas fa-hat-wizard"></i> Entrar</a></li>
+                </ul>
+            </nav>
+            <div class="search-box">
+                <input type="text" placeholder="Pesquisar por título da obra...">
+                <button type="button"><i class="fas fa-search"></i></button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="content-header">
+            <h1>Lista de Obras</h1>
+            <div class="filter-options">
+                <select name="genre">
+                    <option value="">Todos os Gêneros</option>
+                    <option value="Ação">Ação</option>
+                    <option value="Aventura">Aventura</option>
+                    <option value="Fantasia">Fantasia</option>
+                    <option value="Esporte">Esporte</option>
+                </select>
+                <select name="sort">
+                    <option value="recentes">Mais Recentes</option>
+                    <option value="rating">Maior Avaliação</option>
+                    <option value="alfabetica">A-Z</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="obras-grid">
+            <!-- Os cards serão carregados dinamicamente via JavaScript -->
+        </div>
+
+        <!-- Paginação -->
+        <div class="pagination">
+            <a href="#" class="prev disabled">Anterior</a>
+            <span class="current">1</span>
+            <a href="#">2</a>
+            <a href="#">3</a>
+            <span class="dots">...</span>
+            <a href="#">10</a>
+            <a href="#" class="next">Próximo</a>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="footer-container">
+            <div class="footer-section">
+                <h4>Navegação</h4>
+                <ul>
+                    <li><a href="http://127.0.0.1:5502/project/index.html"><i class="fas fa-home"></i> Início</a></li>
+                    <li><a href="http://127.0.0.1:5502/project/bibliotecatext.html"><i class="fas fa-book"></i> Biblioteca</a></li>
+                    <li><a href="#"><i class="fas fa-rocket"></i> Lançamentos</a></li>
+                    <li><a href="#"><i class="fas fa-fire"></i> Populares</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Social</h4>
+                <ul>
+                    <li><a href="#"><i class="fab fa-discord"></i> Discord</a></li>
+                    <li><a href="#"><i class="fab fa-twitter"></i> Twitter</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Parceiros</h4>
+                <ul>
+                    <li><a href="#"><i class="fab fa-google-drive"></i> GOOGLE DRIVER</a></li>
+                    <li><a href="#"><i class="fas fa-book-reader"></i> PLAYBOOK</a></li>
+                    <li><a href="#"><i class="fas fa-cloud"></i> CLOUD DRIVER AI</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>Site criado por <span class="verified"><i class="fas fa-check-circle"></i></span><span class="animated-text">Smunk</span> <i class="fas fa-dragon"></i></p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/bibliotecatext.js"></script>
+    <script src="seguranca/anti_inspect_v2.js"></script>
+</body>
+</html>

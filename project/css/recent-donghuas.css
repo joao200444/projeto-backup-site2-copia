@@ -1,0 +1,116 @@
+/* Estilos para Donghuas Recentes */
+.recent-donghuas-container {
+    margin-top: 2rem;
+    padding: 1rem;
+    background-color: rgba(30, 30, 30, 0.8);
+    border-radius: 10px;
+}
+
+.recent-donghuas-container h2 {
+    color: #fff;
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+}
+
+.recent-donghuas-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 1rem;
+}
+
+.recent-donghuas-grid .donghua-item {
+    background-color: rgba(45, 45, 45, 0.9);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.3s ease;
+}
+
+.recent-donghuas-grid .donghua-item:hover {
+    transform: scale(1.05);
+}
+
+.recent-donghuas-grid .donghua-image {
+    width: 100%;
+    height: 250px;
+    overflow: hidden;
+}
+
+.recent-donghuas-grid .donghua-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.recent-donghuas-grid .donghua-info {
+    padding: 0.75rem;
+    text-align: center;
+}
+
+.recent-donghuas-grid .donghua-info h3 {
+    color: #fff;
+    margin-bottom: 0.5rem;
+    font-size: 1rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.recent-donghuas-grid .donghua-info p {
+    color: #aaa;
+    font-size: 0.8rem;
+}
+
+/* Estilos para Placeholders de Donghuas */
+.donghua-placeholder {
+    background-color: rgba(45, 45, 45, 0.5);
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
+}
+
+.donghua-placeholder .donghua-image .placeholder-content {
+    width: 100%;
+    height: 250px;
+    background: linear-gradient(90deg, 
+        rgba(50, 50, 50, 0.2) 0%, 
+        rgba(70, 70, 70, 0.4) 50%, 
+        rgba(50, 50, 50, 0.2) 100%
+    );
+    background-size: 200% 100%;
+    animation: placeholderLoading 1.5s infinite;
+}
+
+.donghua-placeholder .donghua-info .placeholder-title {
+    height: 1.2rem;
+    width: 70%;
+    margin: 0.5rem auto;
+    background: linear-gradient(90deg, 
+        rgba(50, 50, 50, 0.2) 0%, 
+        rgba(70, 70, 70, 0.4) 50%, 
+        rgba(50, 50, 50, 0.2) 100%
+    );
+    background-size: 200% 100%;
+    animation: placeholderLoading 1.5s infinite;
+}
+
+.donghua-placeholder .donghua-info .placeholder-genre {
+    height: 0.8rem;
+    width: 50%;
+    margin: 0.5rem auto;
+    background: linear-gradient(90deg, 
+        rgba(50, 50, 50, 0.2) 0%, 
+        rgba(70, 70, 70, 0.4) 50%, 
+        rgba(50, 50, 50, 0.2) 100%
+    );
+    background-size: 200% 100%;
+    animation: placeholderLoading 1.5s infinite;
+}
+
+@keyframes placeholderLoading {
+    0% {
+        background-position: -200% 0;
+    }
+    100% {
+        background-position: 200% 0;
+    }
+}

@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adicionar à Biblioteca - SomDong</title>
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/adicionador-biblioteca.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+</head>
+<body class="bg-black">
+    <div class="adicionador-container">
+        <div class="form-header">
+            <h1>Adicionar à Biblioteca</h1>
+        </div>
+        
+        <form id="adicionadorForm">
+            <div class="form-group">
+                <label for="donghuaTitle">Título do Donghua</label>
+                <input type="text" id="donghuaTitle" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+                <label for="donghuaDescription">Descrição</label>
+                <textarea id="donghuaDescription" class="form-control" rows="4" required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Gêneros</label>
+                <div class="generos-grid">
+                    <label class="checkbox-container">
+                        <input type="checkbox" name="genero" value="Ação"> 
+                        <span class="checkmark"></span>
+                        <span class="label-text">Ação</span>
+                    </label>
+                    <label class="checkbox-container">
+                        <input type="checkbox" name="genero" value="Aventura">
+                        <span class="checkmark"></span>
+                        <span class="label-text">Aventura</span>
+                    </label>
+                    <label class="checkbox-container">
+                        <input type="checkbox" name="genero" value="Cultivo">
+                        <span class="checkmark"></span>
+                        <span class="label-text">Cultivo</span>
+                    </label>
+                    <label class="checkbox-container">
+                        <input type="checkbox" name="genero" value="Fantasia">
+                        <span class="checkmark"></span>
+                        <span class="label-text">Fantasia</span>
+                    </label>
+                    <label class="checkbox-container">
+                        <input type="checkbox" name="genero" value="Artes Marciais">
+                        <span class="checkmark"></span>
+                        <span class="label-text">Artes Marciais</span>
+                    </label>
+                    <label class="checkbox-container">
+                        <input type="checkbox" name="genero" value="Romance">
+                        <span class="checkmark"></span>
+                        <span class="label-text">Romance</span>
+                    </label>
+                    <label class="checkbox-container">
+                        <input type="checkbox" name="genero" value="Sci-Fi">
+                        <span class="checkmark"></span>
+                        <span class="label-text">Sci-Fi</span>
+                    </label>
+                    <label class="checkbox-container">
+                        <input type="checkbox" name="genero" value="Comédia">
+                        <span class="checkmark"></span>
+                        <span class="label-text">Comédia</span>
+                    </label>
+                    <label class="checkbox-container">
+                        <input type="checkbox" name="genero" value="Drama">
+                        <span class="checkmark"></span>
+                        <span class="label-text">Drama</span>
+                    </label>
+                    <label class="checkbox-container">
+                        <input type="checkbox" name="genero" value="Mistério">
+                        <span class="checkmark"></span>
+                        <span class="label-text">Mistério</span>
+                    </label>
+                    <label class="checkbox-container">
+                        <input type="checkbox" name="genero" value="Horror">
+                        <span class="checkmark"></span>
+                        <span class="label-text">Horror</span>
+                    </label>
+                    <label class="checkbox-container">
+                        <input type="checkbox" name="genero" value="Sobrenatural">
+                        <span class="checkmark"></span>
+                        <span class="label-text">Sobrenatural</span>
+                    </label>
+                    <label class="checkbox-container">
+                        <input type="checkbox" name="genero" value="Histórico">
+                        <span class="checkmark"></span>
+                        <span class="label-text">Histórico</span>
+                    </label>
+                    <label class="checkbox-container">
+                        <input type="checkbox" name="genero" value="Wuxia">
+                        <span class="checkmark"></span>
+                        <span class="label-text">Wuxia</span>
+                    </label>
+                    <label class="checkbox-container">
+                        <input type="checkbox" name="genero" value="Xianxia">
+                        <span class="checkmark"></span>
+                        <span class="label-text">Xianxia</span>
+                    </label>
+                    <label class="checkbox-container">
+                        <input type="checkbox" name="genero" value="Xuanhuan">
+                        <span class="checkmark"></span>
+                        <span class="label-text">Xuanhuan</span>
+                    </label>
+                    <label class="checkbox-container">
+                        <input type="checkbox" name="genero" value="Esporte">
+                        <span class="checkmark"></span>
+                        <span class="label-text">Esporte</span>
+                    </label>
+                    <label class="checkbox-container">
+                        <input type="checkbox" name="genero" value="Slice of Life">
+                        <span class="checkmark"></span>
+                        <span class="label-text">Slice of Life</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Status</label>
+                <div class="status-grid">
+                    <label class="checkbox-container status-novo">
+                        <input type="radio" name="status" value="Novo" required>
+                        <span class="checkmark"></span>
+                        <span class="label-text">Novo</span>
+                    </label>
+                    <label class="checkbox-container status-andamento">
+                        <input type="radio" name="status" value="Em Andamento" required>
+                        <span class="checkmark"></span>
+                        <span class="label-text">Em Andamento</span>
+                    </label>
+                    <label class="checkbox-container status-completo">
+                        <input type="radio" name="status" value="Completo" required>
+                        <span class="checkmark"></span>
+                        <span class="label-text">Completo</span>
+                    </label>
+                    <label class="checkbox-container status-hiato">
+                        <input type="radio" name="status" value="Em Hiato" required>
+                        <span class="checkmark"></span>
+                        <span class="label-text">Em Hiato</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="donghuaEpisodes">Número de Episódios</label>
+                <input type="number" id="donghuaEpisodes" class="form-control" min="1" required>
+            </div>
+
+            <div class="form-group">
+                <label for="donghuaCover">Link da Capa do Donghua</label>
+                <input type="url" id="donghuaCover" class="form-control" 
+                       placeholder="Cole o link da imagem (ex: https://exemplo.com/imagem.jpg)" required>
+                <div id="coverPreview" class="cover-preview empty"></div>
+            </div>
+
+            <button type="submit" class="submit-btn">Adicionar à Biblioteca</button>
+        </form>
+    </div>
+
+    <div id="successMessage" class="success-message">
+        Donghua adicionado com sucesso! Redirecionando para a biblioteca...
+    </div>
+
+    <script src="js/adicionador-biblioteca.js"></script>
+    <script src="js/biblioteca-logger.js"></script>
+</body>
+</html>

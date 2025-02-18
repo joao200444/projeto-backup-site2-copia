@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel de Administração</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="admin-page">
+    <div class="admin-sidebar">
+        <div class="admin-logo">
+            <i class="fas fa-shield-alt"></i>
+            <span>Painel Admin</span>
+        </div>
+        <nav class="admin-nav">
+            <a href="#dashboard" class="active"><i class="fas fa-chart-line"></i> Dashboard</a>
+            <a href="#obras"><i class="fas fa-film"></i> Gerenciar Obras</a>
+            <a href="#usuarios"><i class="fas fa-users"></i> Usuários</a>
+            <a href="#comentarios"><i class="fas fa-comments"></i> Comentários</a>
+            <a href="#relatorios"><i class="fas fa-chart-bar"></i> Relatórios</a>
+            <a href="#configuracoes"><i class="fas fa-cog"></i> Configurações</a>
+        </nav>
+        <div class="admin-user">
+            <img src="placeholder.jpg" alt="Admin" class="admin-avatar">
+            <div class="admin-info">
+                <span class="admin-name">Admin</span>
+                <span class="admin-role">Super Admin</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="admin-main">
+        <header class="admin-header">
+            <div class="header-search">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Pesquisar...">
+            </div>
+            <div class="header-actions">
+                <button class="notification-btn">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-badge">3</span>
+                </button>
+                <button class="theme-toggle">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+        </header>
+
+        <div class="admin-content">
+            <!-- Dashboard -->
+            <section id="dashboard" class="dashboard-section">
+                <div class="dashboard-header">
+                    <h2>Dashboard</h2>
+                    <div class="date-filter">
+                        <button class="active">Hoje</button>
+                        <button>Semana</button>
+                        <button>Mês</button>
+                        <button>Ano</button>
+                    </div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: rgba(74, 144, 226, 0.1)">
+                            <i class="fas fa-eye" style="color: #4a90e2"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Visualizações</h3>
+                            <p class="stat-value">12.5K</p>
+                            <span class="stat-change positive">+15.3%</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: rgba(46, 204, 113, 0.1)">
+                            <i class="fas fa-users" style="color: #2ecc71"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Usuários Ativos</h3>
+                            <p class="stat-value">1.2K</p>
+                            <span class="stat-change positive">+12.8%</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: rgba(155, 89, 182, 0.1)">
+                            <i class="fas fa-film" style="color: #9b59b6"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Total de Obras</h3>
+                            <p class="stat-value">256</p>
+                            <span class="stat-change positive">+5.2%</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: rgba(230, 126, 34, 0.1)">
+                            <i class="fas fa-comment" style="color: #e67e22"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Comentários</h3>
+                            <p class="stat-value">3.4K</p>
+                            <span class="stat-change negative">-2.1%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="charts-grid">
+                    <div class="chart-card">
+                        <h3>Visualizações por Dia</h3>
+                        <canvas id="viewsChart"></canvas>
+                    </div>
+                    <div class="chart-card">
+                        <h3>Top Obras</h3>
+                        <div class="top-obras">
+                            <!-- Top obras serão inseridas via JavaScript -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="recent-activity">
+                    <h3>Atividade Recente</h3>
+                    <div class="activity-list">
+                        <!-- Atividades serão inseridas via JavaScript -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Gerenciar Obras -->
+            <section id="obras" class="obras-section" style="display: none;">
+                <div class="obras-header">
+                    <h2>Gerenciar Obras</h2>
+                    <button class="add-obra-btn"><i class="fas fa-plus"></i> Nova Obra</button>
+                </div>
+
+                <div class="obras-filters">
+                    <div class="filter-group">
+                        <select id="statusFilter">
+                            <option value="">Status</option>
+                            <option value="active">Ativo</option>
+                            <option value="draft">Rascunho</option>
+                            <option value="archived">Arquivado</option>
+                        </select>
+                        <select id="formatoFilter">
+                            <option value="">Formato</option>
+                            <option value="video">Vídeo</option>
+                            <option value="imagem">Imagem</option>
+                        </select>
+                        <select id="generoFilter">
+                            <option value="">Gênero</option>
+                            <!-- Gêneros serão inseridos via JavaScript -->
+                        </select>
+                    </div>
+                    <div class="search-group">
+                        <input type="text" placeholder="Pesquisar obras...">
+                        <button><i class="fas fa-search"></i></button>
+                    </div>
+                </div>
+
+                <div class="obras-table">
+                    <!-- Tabela de obras será inserida via JavaScript -->
+                </div>
+
+                <div class="obras-pagination">
+                    <!-- Paginação será inserida via JavaScript -->
+                </div>
+            </section>
+
+            <!-- Modal de Nova Obra -->
+            <div class="modal" id="obraModal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>Nova Obra</h3>
+                        <button class="close-modal"><i class="fas fa-times"></i></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="obraForm">
+                            <div class="form-group">
+                                <label>Título</label>
+                                <input type="text" name="titulo" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Descrição</label>
+                                <textarea name="descricao" required></textarea>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Formato</label>
+                                    <select name="formato" required>
+                                        <option value="video">Vídeo</option>
+                                        <option value="imagem">Imagem</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Status</label>
+                                    <select name="status" required>
+                                        <option value="active">Ativo</option>
+                                        <option value="draft">Rascunho</option>
+                                        <option value="archived">Arquivado</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Gêneros</label>
+                                <div class="tags-input">
+                                    <input type="text" id="generoInput" placeholder="Digite e pressione Enter">
+                                    <div class="tags-container"></div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Imagem de Capa</label>
+                                <div class="file-upload">
+                                    <input type="file" accept="image/*">
+                                    <div class="upload-preview"></div>
+                                </div>
+                            </div>
+                            <div class="form-actions">
+                                <button type="button" class="cancel-btn">Cancelar</button>
+                                <button type="submit" class="save-btn">Salvar</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="admin-dashboard.js"></script>
+</body>
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exemplo de Proteção</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f0f0f0;
+        }
+
+        .instrucoes {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        code {
+            background: #eee;
+            padding: 2px 5px;
+            border-radius: 3px;
+        }
+
+        pre {
+            background: #333;
+            color: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="instrucoes">
+        <h1>Como usar a proteção contra inspeção</h1>
+        <p>Para adicionar a proteção ao seu site, inclua o arquivo <code>protecao.js</code> antes do fechamento da tag body:</p>
+        <pre><code><script src="seguranca/protecao.js"></script></code></pre>
+        
+        <h2>Funcionalidades incluídas:</h2>
+        <ul>
+            <li>Bloqueio da tecla F12</li>
+            <li>Bloqueio do botão direito do mouse</li>
+            <li>Bloqueio de atalhos do DevTools (CTRL+SHIFT+I, etc.)</li>
+            <li>Detecção e prevenção de abertura do DevTools</li>
+            <li>Bloqueio de visualização do código fonte</li>
+            <li>Bloqueio de seleção de texto</li>
+        </ul>
+
+        <h2>Observações importantes:</h2>
+        <ul>
+            <li>Esta proteção dificulta, mas não impede completamente o acesso ao código</li>
+            <li>Deve ser usada em conjunto com outras medidas de segurança</li>
+            <li>Recomendado para conteúdo que precisa de proteção básica</li>
+        </ul>
+    </div>
+
+    <!-- Incluindo o script de proteção -->
+    <script src="protecao.js"></script>
+</body>
+</html>

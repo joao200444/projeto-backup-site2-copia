@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SomDong - Player Nativo Avançado</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body, html {
+            background-color: black !important;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            color: white;
+        }
+        /* Advanced Player Styles */
+        #nativePlayer {
+            max-height: 80vh;
+            width: 100%;
+            background-color: #1a1a1a;
+        }
+        .player-controls {
+            background-color: rgba(26, 26, 26, 0.8);
+            backdrop-filter: blur(10px);
+        }
+        /* Fullscreen Styles */
+        #nativePlayer:-webkit-full-screen {
+            width: 100%;
+            height: 100%;
+        }
+        #nativePlayer:-moz-full-screen {
+            width: 100%;
+            height: 100%;
+        }
+        #nativePlayer:fullscreen {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body class="bg-black">
+    <!-- Player Toggle Buttons -->
+    <div class="fixed top-4 right-4 z-50 flex space-x-4">
+        <a href="player.html" class="inline-flex items-center bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="3" y1="9" x2="21" y2="9"></line>
+                <line x1="9" y1="21" x2="9" y2="9"></line>
+            </svg>
+            Player 1
+        </a>
+        <a href="player-nativo.html" class="inline-flex items-center bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="3" y1="9" x2="21" y2="9"></line>
+                <line x1="9" y1="21" x2="9" y2="9"></line>
+            </svg>
+            Player 2
+        </a>
+    </div>
+
+    <!-- Native Player Container -->
+    <div class="container mx-auto px-4 py-8 min-h-screen flex flex-col">
+        <div class="flex-grow flex items-center justify-center">
+            <div class="w-full max-w-4xl">
+                <!-- Advanced Video Player -->
+                <div class="video-container relative">
+                    <video 
+                        id="nativePlayer" 
+                        class="w-full rounded-lg shadow-2xl"
+                        poster="path/to/poster-image.jpg"
+                    >
+                        <source src="" type="video/mp4">
+                        Seu navegador não suporta o elemento de vídeo.
+                    </video>
+                    
+                    <!-- Custom Overlay Controls -->
+                    <div class="custom-controls absolute bottom-0 left-0 right-0 p-4 player-controls hidden">
+                        <div class="flex flex-col space-y-4">
+                            <!-- Progress Bar -->
+                            <input 
+                                type="range" 
+                                id="progressBar" 
+                                min="0" 
+                                max="100" 
+                                value="0" 
+                                class="w-full h-2 bg-gray-700 rounded-full appearance-none cursor-pointer"
+                            >
+                            
+                            <!-- Main Controls Row -->
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-4">
+                                    <!-- Play/Pause Button -->
+                                    <button id="playPauseBtn" class="text-white hover:text-blue-500 transition-colors">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                                        </svg>
+                                    </button>
+
+                                    <!-- Volume Control -->
+                                    <div class="flex items-center space-x-2">
+                                        <button id="muteBtn" class="text-white hover:text-blue-500 transition-colors">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                                                <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+                                            </svg>
+                                        </button>
+                                        <input 
+                                            type="range" 
+                                            id="volumeSlider" 
+                                            min="0" 
+                                            max="1" 
+                                            step="0.1" 
+                                            value="1" 
+                                            class="w-24 h-2 bg-gray-700 rounded-full appearance-none"
+                                        >
+                                    </div>
+                                </div>
+
+                                <div class="flex items-center space-x-4">
+                                    <!-- Playback Speed -->
+                                    <select id="playbackSpeed" class="bg-gray-800 text-white rounded px-2 py-1">
+                                        <option value="0.5">0.5x</option>
+                                        <option value="1" selected>1x</option>
+                                        <option value="1.5">1.5x</option>
+                                        <option value="2">2x</option>
+                                    </select>
+
+                                    <!-- Resolution Selector -->
+                                    <select id="resolutionSelector" class="bg-gray-800 text-white rounded px-2 py-1">
+                                        <option value="">Resolução</option>
+                                        <option value="240">240p</option>
+                                        <option value="360">360p</option>
+                                        <option value="480">480p</option>
+                                        <option value="720">720p</option>
+                                        <option value="1080">1080p</option>
+                                    </select>
+
+                                    <!-- Fullscreen Button -->
+                                    <button id="fullscreenBtn" class="text-white hover:text-blue-500 transition-colors">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Time Display -->
+                            <div class="flex justify-between text-sm">
+                                <span id="currentTime">0:00</span>
+                                <span id="duration">0:00</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- URL Input for Native Player -->
+                <div class="mt-8 flex">
+                    <input 
+                        type="text" 
+                        id="videoUrlInput" 
+                        placeholder="Cole o link do vídeo aqui" 
+                        class="flex-grow p-3 bg-gray-800 text-white rounded-l-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
+                    <button 
+                        id="loadVideoBtn" 
+                        class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-r-lg transition-colors"
+                    >
+                        Carregar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const videoUrlInput = document.getElementById('videoUrlInput');
+            const loadVideoBtn = document.getElementById('loadVideoBtn');
+            const nativePlayer = document.getElementById('nativePlayer');
+            const customControls = document.querySelector('.custom-controls');
+            const playPauseBtn = document.getElementById('playPauseBtn');
+            const muteBtn = document.getElementById('muteBtn');
+            const volumeSlider = document.getElementById('volumeSlider');
+            const playbackSpeed = document.getElementById('playbackSpeed');
+            const resolutionSelector = document.getElementById('resolutionSelector');
+            const fullscreenBtn = document.getElementById('fullscreenBtn');
+            const progressBar = document.getElementById('progressBar');
+            const currentTimeEl = document.getElementById('currentTime');
+            const durationEl = document.getElementById('duration');
+
+            // Load Video
+            loadVideoBtn.addEventListener('click', () => {
+                const videoUrl = videoUrlInput.value.trim();
+                if (videoUrl) {
+                    try {
+                        nativePlayer.src = videoUrl;
+                        nativePlayer.play();
+                        customControls.classList.remove('hidden');
+                    } catch (error) {
+                        alert('Erro ao carregar o vídeo. Verifique o link.');
+                        console.error('Video load error:', error);
+                    }
+                } else {
+                    alert('Por favor, insira um link de vídeo válido.');
+                }
+            });
+
+            // Custom Play/Pause
+            playPauseBtn.addEventListener('click', () => {
+                if (nativePlayer.paused) {
+                    nativePlayer.play();
+                    playPauseBtn.innerHTML = `
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="6" y="4" width="4" height="16"></rect>
+                            <rect x="14" y="4" width="4" height="16"></rect>
+                        </svg>
+                    `;
+                } else {
+                    nativePlayer.pause();
+                    playPauseBtn.innerHTML = `
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                        </svg>
+                    `;
+                }
+            });
+
+            // Mute Toggle
+            muteBtn.addEventListener('click', () => {
+                nativePlayer.muted = !nativePlayer.muted;
+                muteBtn.innerHTML = nativePlayer.muted 
+                    ? `
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                        <line x1="23" y1="1" x2="1" y2="23"></line>
+                    </svg>
+                    `
+                    : `
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                        <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+                    </svg>
+                    `;
+            });
+
+            // Volume Slider
+            volumeSlider.addEventListener('input', (e) => {
+                nativePlayer.volume = e.target.value;
+                nativePlayer.muted = false;
+            });
+
+            // Playback Speed
+            playbackSpeed.addEventListener('change', (e) => {
+                nativePlayer.playbackRate = parseFloat(e.target.value);
+            });
+
+            // Resolution Selector (Placeholder - actual implementation depends on available video sources)
+            resolutionSelector.addEventListener('change', (e) => {
+                const resolution = e.target.value;
+                // TODO: Implement resolution switching logic
+                console.log(`Selected resolution: ${resolution}p`);
+                alert('Troca de resolução não implementada. Requer múltiplas fontes de vídeo.');
+            });
+
+            // Fullscreen Toggle
+            fullscreenBtn.addEventListener('click', () => {
+                if (!document.fullscreenElement) {
+                    if (nativePlayer.requestFullscreen) {
+                        nativePlayer.requestFullscreen();
+                    } else if (nativePlayer.mozRequestFullScreen) { // Firefox
+                        nativePlayer.mozRequestFullScreen();
+                    } else if (nativePlayer.webkitRequestFullscreen) { // Chrome, Safari and Opera
+                        nativePlayer.webkitRequestFullscreen();
+                    } else if (nativePlayer.msRequestFullscreen) { // IE/Edge
+                        nativePlayer.msRequestFullscreen();
+                    }
+                } else {
+                    if (document.exitFullscreen) {
+                        document.exitFullscreen();
+                    } else if (document.mozCancelFullScreen) { // Firefox
+                        document.mozCancelFullScreen();
+                    } else if (document.webkitExitFullscreen) { // Chrome, Safari and Opera
+                        document.webkitExitFullscreen();
+                    } else if (document.msExitFullscreen) { // IE/Edge
+                        document.msExitFullscreen();
+                    }
+                }
+            });
+
+            // Progress Bar and Time Display
+            nativePlayer.addEventListener('timeupdate', () => {
+                const progress = (nativePlayer.currentTime / nativePlayer.duration) * 100;
+                progressBar.value = progress;
+
+                // Update current time
+                const currentMinutes = Math.floor(nativePlayer.currentTime / 60);
+                const currentSeconds = Math.floor(nativePlayer.currentTime % 60);
+                currentTimeEl.textContent = `${currentMinutes}:${currentSeconds < 10 ? '0' : ''}${currentSeconds}`;
+
+                // Update duration
+                if (nativePlayer.duration) {
+                    const durationMinutes = Math.floor(nativePlayer.duration / 60);
+                    const durationSeconds = Math.floor(nativePlayer.duration % 60);
+                    durationEl.textContent = `${durationMinutes}:${durationSeconds < 10 ? '0' : ''}${durationSeconds}`;
+                }
+            });
+
+            // Progress Bar Seeking
+            progressBar.addEventListener('input', (e) => {
+                const time = (e.target.value / 100) * nativePlayer.duration;
+                nativePlayer.currentTime = time;
+            });
+
+            // Update Play/Pause Button on Video Events
+            nativePlayer.addEventListener('play', () => {
+                playPauseBtn.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="6" y="4" width="4" height="16"></rect>
+                        <rect x="14" y="4" width="4" height="16"></rect>
+                    </svg>
+                `;
+            });
+
+            nativePlayer.addEventListener('pause', () => {
+                playPauseBtn.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                    </svg>
+                `;
+            });
+        });
+    </script>
+</body>
+</html>

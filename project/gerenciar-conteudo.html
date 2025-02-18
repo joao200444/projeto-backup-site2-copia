@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciar Conteúdo - Donghua</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="main-header">
+            <nav class="nav-menu">
+                <div class="logo">
+                    <a href="index.html">Donghua</a>
+                </div>
+                <ul class="nav-links">
+                    <li><a href="index.html">Início</a></li>
+                    <li><a href="biblioteca.html">Biblioteca</a></li>
+                    <li><a href="perfil.html">Perfil</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <!-- Main Content -->
+        <main class="content-manager">
+            <div class="content-header">
+                <h1>Gerenciar Conteúdo</h1>
+                <button id="addContentButton" class="add-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="12" y1="5" x2="12" y2="19"></line>
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                    </svg>
+                    Adicionar Donghua
+                </button>
+            </div>
+
+            <!-- Tabs -->
+            <div class="tab-container">
+                <div class="tab-buttons">
+                    <button class="tab-button active" data-tab="donghuas">Donghuas</button>
+                    <button class="tab-button" data-tab="episodes">Episódios</button>
+                    <button class="tab-button" data-tab="categories">Categorias</button>
+                </div>
+
+                <!-- Tab Contents -->
+                <div class="tab-contents">
+                    <!-- Donghuas Tab -->
+                    <div class="tab-content active" data-tab="donghuas">
+                        <div class="content-list" id="donghuaList">
+                            <!-- Lista de donghuas será inserida aqui via JavaScript -->
+                        </div>
+                    </div>
+
+                    <!-- Episodes Tab -->
+                    <div class="tab-content" data-tab="episodes">
+                        <div class="content-list" id="episodeList">
+                            <!-- Lista de episódios será inserida aqui via JavaScript -->
+                        </div>
+                    </div>
+
+                    <!-- Categories Tab -->
+                    <div class="tab-content" data-tab="categories">
+                        <div class="content-list" id="categoryList">
+                            <!-- Lista de categorias será inserida aqui via JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal -->
+            <div id="contentModal" class="modal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2>Adicionar Donghua</h2>
+                        <button class="close-button">×</button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="contentForm">
+                            <div class="form-group">
+                                <label for="title">Título do Donghua</label>
+                                <input type="text" id="title" name="title" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="description">Descrição</label>
+                                <textarea id="description" name="description" rows="4" required></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="coverImage">Imagem de Capa</label>
+                                <input type="file" id="coverImage" name="coverImage" accept="image/*" required>
+                                <div class="image-preview" id="imagePreview"></div>
+                            </div>
+                            <div class="form-group">
+                                <label for="categories">Categorias</label>
+                                <select id="categories" name="categories" multiple required>
+                                    <option value="action">Ação</option>
+                                    <option value="adventure">Aventura</option>
+                                    <option value="comedy">Comédia</option>
+                                    <option value="drama">Drama</option>
+                                    <option value="fantasy">Fantasia</option>
+                                    <option value="martial-arts">Artes Marciais</option>
+                                    <option value="romance">Romance</option>
+                                    <option value="sci-fi">Ficção Científica</option>
+                                    <option value="supernatural">Sobrenatural</option>
+                                    <option value="mystery">Mistério</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="formato">Formato:</label>
+                                <select id="formato" required>
+                                    <option value="video">Vídeo</option>
+                                    <option value="imagem">Imagem</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="status">Status:</label>
+                                <select id="status" required>
+                                    <option value="active">Ativo</option>
+                                    <option value="draft">Rascunho</option>
+                                    <option value="archived">Arquivado</option>
+                                </select>
+                            </div>
+
+                            <!-- Seção de Episódios -->
+                            <div class="episodes-section">
+                                <h3>Episódios</h3>
+                                <div id="episodeFields" class="episode-fields">
+                                    <!-- Campos de episódio serão adicionados aqui via JavaScript -->
+                                </div>
+                            </div>
+
+                            <div class="form-actions">
+                                <button type="button" class="cancel-button">Cancelar</button>
+                                <button type="submit" class="save-button">Salvar Donghua</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Função para salvar a obra
+        function salvarObra() {
+            const titulo = document.getElementById('title').value;
+            const descricao = document.getElementById('description').value;
+            const imagem = document.getElementById('coverImage').value;
+            const formato = document.getElementById('formato').value;
+            const status = document.getElementById('status').value;
+            const generos = Array.from(document.getElementById('categories').selectedOptions).map(option => option.value);
+
+            if (!titulo || !descricao || !imagem || !formato || !status || generos.length === 0) {
+                alert('Por favor, preencha todos os campos obrigatórios');
+                return;
+            }
+
+            // Pegar obras existentes ou iniciar array vazio
+            const obras = JSON.parse(localStorage.getItem('obras')) || [];
+
+            // Criar nova obra
+            const novaObra = {
+                id: Date.now(), // Usar timestamp como ID único
+                titulo,
+                descricao,
+                imagem,
+                formato,
+                status,
+                generos,
+                dataCriacao: new Date().toISOString(),
+                capitulos: [] // Iniciar com array vazio de capítulos
+            };
+
+            // Adicionar nova obra ao array
+            obras.push(novaObra);
+
+            // Salvar no localStorage
+            localStorage.setItem('obras', JSON.stringify(obras));
+
+            // Mostrar mensagem de sucesso
+            const mensagem = document.createElement('div');
+            mensagem.className = 'success-message';
+            mensagem.textContent = 'Obra adicionada com sucesso!';
+            document.body.appendChild(mensagem);
+
+            // Remover mensagem após 3 segundos
+            setTimeout(() => {
+                mensagem.remove();
+            }, 3000);
+
+            // Limpar formulário
+            document.getElementById('contentForm').reset();
+
+            // Fechar modal
+            document.getElementById('contentModal').style.display = 'none';
+        }
+
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', () => {
+            const addButton = document.getElementById('addContentButton');
+            const modal = document.getElementById('contentModal');
+            const closeBtn = document.querySelector('.close-button');
+            const saveBtn = document.querySelector('.save-button');
+
+            addButton.addEventListener('click', () => {
+                modal.style.display = 'block';
+            });
+
+            closeBtn.addEventListener('click', () => {
+                modal.style.display = 'none';
+            });
+
+            saveBtn.addEventListener('click', salvarObra);
+
+            window.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+        });
+    </script>
+
+    <script src="gerenciar-conteudo.js"></script>
+</body>
+</html>
